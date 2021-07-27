@@ -17,7 +17,6 @@ options(knitr.duplicate.label = "allow")
 
 knitr::read_chunk(here::here("vignettes", "rmd_chunks/r-chunks.R"))
 knitr::read_chunk(here::here("vignettes", "rmd_chunks/stata-chunks.do"))
-library(dca.tutorial)
 ```
 
 Diagnostic and prognostic models are typically evaluated with measures of accuracy that do not address clinical consequences.
@@ -33,9 +32,9 @@ Below we'll walk you through how to perform DCA for binary and time-to-event out
 Build a logistic regression model
 
 ```{r, echo=FALSE, results='asis'}
-add_tabset_codes("model")
+dca.tutorial::add_tabset_codes("model")
 ```
 
 ```{r, echo=FALSE, results='asis'}
-add_tabset_codes("model2")
+dca.tutorial::add_tabset_codes("model2")
 ```
