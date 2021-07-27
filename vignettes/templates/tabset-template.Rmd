@@ -1,0 +1,19 @@
+#### {.tabset .tabset-pills}
+
+##### R
+
+```{r, r-{{chunk_label}}, eval = FALSE}
+```
+
+##### Stata
+
+```{stata, stata-{{chunk_label}}, eval = FALSE}
+```
+
+#### {-}
+
+<!-- This chunk runs the R code without printing the code (since that is in the tabset). -->
+```{r, r-{{chunk_label}}, eval = TRUE, echo = FALSE}
+```
+
+<hr>

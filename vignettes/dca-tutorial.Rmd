@@ -1,6 +1,10 @@
 ---
 title: "DCA Tutorial"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{DCA Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -8,13 +12,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(knitr.duplicate.label = "allow")
 
 library(dcurves)
 library(gtsummary)
 library(tidyr)
 library(dplyr)
 ```
-
 
 Diagnostic and prognostic models are typically evaluated with measures of accuracy that do not address clinical consequences.
 Decision-analytic techniques allow assessment of clinical outcomes but often require collection of additional information and may be cumbersome to apply to models that yield a continuous result.

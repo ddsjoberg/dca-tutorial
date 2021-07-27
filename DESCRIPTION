@@ -9,9 +9,15 @@ Authors@R:
 Description: Tutorial for performing Decision Curve Analysis (DCA) in R,
     Stata, SAS, and Python.
 License: MIT + file LICENSE
-Suggests: 
+Imports:
     knitr,
-    rmarkdown
+    magrittr
+Suggests: 
+    dcurves,
+    dplyr,
+    gtsummary,
+    rmarkdown,
+    tidyr
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
