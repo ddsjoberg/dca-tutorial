@@ -1,0 +1,16 @@
+name: "Daniel D. Sjoberg"
+output_dir: "."
+
+navbar:
+  title: "Daniel D. Sjoberg"
+  left:
+    - icon: fa-home fa-lg
+      href: http://www.danieldsjoberg.com
+
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/ddsjoberg/dca.tutorial
+
+output:
+  html_document:
+    theme: flatly
