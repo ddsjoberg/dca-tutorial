@@ -31,3 +31,7 @@ Build a logistic regression model
 ```{r, echo=FALSE, results='asis'}
 add_tabset_codes("model")
 ```
+
+```{r, echo=FALSE, results='asis'}
+add_tabset_codes("model2")
+```

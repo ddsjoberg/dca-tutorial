@@ -2,16 +2,13 @@
 % Please edit documentation in R/add_tabset_codes.R
 \name{add_tabset_codes}
 \alias{add_tabset_codes}
-\title{Title}
+\title{Inserts Tabset Syntax by Language}
 \usage{
 add_tabset_codes(chunk_label)
 }
 \arguments{
 \item{chunk_label}{chunk label stub}
 }
-\value{
-
-}
 \description{
-Title
+Inserts Tabset Syntax by Language
 }

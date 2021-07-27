@@ -11,7 +11,7 @@ Description: Tutorial for performing Decision Curve Analysis (DCA) in R,
 License: MIT + file LICENSE
 Imports:
     knitr,
-    magrittr
+    rlang
 Suggests: 
     dcurves,
     dplyr,
