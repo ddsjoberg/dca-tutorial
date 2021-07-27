@@ -3,10 +3,10 @@ title: "DCA Example"
 output: 
   html_document:
     includes: 
-      in_header: "`r here::here('vignettes', 'highlight', 'header.html')`"
-    css: "`r here::here('vignettes', 'highlight', 'styles', 'agate.min.css')`"
+      in_header: "highlight/header.html"
+    css: "highlight/styles/agate.min.css"
 vignette: >
-  %\VignetteIndexEntry{Test}
+  %\VignetteIndexEntry{DCA Example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
