@@ -15,8 +15,8 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.duplicate.label = "allow")
 
-knitr::read_chunk("rmd_chunks/r-chunks.R")
-knitr::read_chunk("rmd_chunks/stata-chunks.do")
+knitr::read_chunk(here::here("vignettes", "rmd_chunks/r-chunks.R"))
+knitr::read_chunk(here::here("vignettes", "rmd_chunks/stata-chunks.do"))
 library(dca.tutorial)
 ```
 

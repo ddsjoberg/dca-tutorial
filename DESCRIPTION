@@ -16,6 +16,7 @@ Suggests:
     dcurves,
     dplyr,
     gtsummary,
+    here,
     rmarkdown,
     tidyr
 VignetteBuilder: 
