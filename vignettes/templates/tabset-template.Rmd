@@ -7,7 +7,7 @@
 
 ##### Stata
 
-```{stata, stata-{{chunk_label}}, eval = FALSE}
+```{stata, stata-{{chunk_label}}, eval = FALSE, class='Stata'}
 ```
 
 #### {-}

@@ -1,6 +1,10 @@
 ---
 title: "DCA Example"
-output: html_document
+output: 
+  html_document:
+    includes: 
+      in_header: "highlight/header.html"
+    css: "highlight/styles/agate.min.css"
 vignette: >
   %\VignetteIndexEntry{Test}
   %\VignetteEngine{knitr::rmarkdown}
