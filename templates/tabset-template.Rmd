@@ -2,7 +2,7 @@
 
 ##### R
 
-```{r, r-{{chunk_label}}, eval = FALSE}
+```{r, r-{{chunk_label}}, eval = FALSE, class='R'}
 ```
 
 ##### Stata
@@ -13,7 +13,7 @@
 #### {-}
 
 <!-- This chunk runs the R code without printing the code (since that is in the tabset). -->
-```{r, r-{{chunk_label}}, eval = TRUE, echo = FALSE}
+```{r, r-{{chunk_label}}, eval = TRUE, echo = FALSE, class='R'}
 ```
 
 <hr>
