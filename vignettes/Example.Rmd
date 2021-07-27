@@ -17,10 +17,8 @@ options(knitr.duplicate.label = "allow")
 ```
 
 ```{r, include=FALSE}
-knitr::read_chunk("rmd_chunks/r-chunks.R")
-knitr::read_chunk("rmd_chunks/stata-chunks.do")
-# here::here("vignettes", "rmd_chunks/r-chunks.R") |> knitr::read_chunk()
-# here::here("vignettes", "rmd_chunks/stata-chunks.do") |> knitr::read_chunk()
+here::here("vignettes", "rmd_chunks/r-chunks.R") |> knitr::read_chunk()
+here::here("vignettes", "rmd_chunks/stata-chunks.do") |> knitr::read_chunk()
 ```
 
 Diagnostic and prognostic models are typically evaluated with measures of accuracy that do not address clinical consequences.
