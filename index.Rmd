@@ -39,7 +39,7 @@ For more details on DCA, visit [www.decisioncurveanalysis.org](https://www.mskcc
 You'll find the original articles explaining the details of the DCA derivation along with other papers providing more details. 
 
 Below we will walk through how to perform DCA for binary and time-to-event outcomes using **R**, **Stata**, **SAS**, and **Python**.
-The code is provided for all languages and the results shown are the output from the R DCA functions.
+The code is provided for all languages and the results shown are the output from the **R** DCA functions.
 
 ## Install & Load
 
