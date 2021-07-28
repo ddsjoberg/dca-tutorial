@@ -18,8 +18,9 @@ To do list....
     - [ ] Implement unit testing
     - [ ] Add a module website?
 - Tutorial
-    - [ ] Add tabsets with each language is its own tab
-    - [ ] Add language-specific code highlighting
+    - [X] Add tabsets with each language is its own tab
+    - [X] Add language-specific code highlighting
+    - [ ] Update the dataset(?s?) used in the tutorial. We previously used a single data set and modfied the interpretation of the variables depending on the setting, .e.g binary outcome, time to event, case-control, but I think this is more confusing than 3 separate data sets.
     - [ ] Update the the case-control data analysis section to utilize user-passed population prevalence
     - [ ] Refresh the previous tutorial as needed.
     - [ ] Add the R code
