@@ -2,6 +2,8 @@
 title: "DCA Example"
 output: 
   html_document:
+    toc: true
+    toc_float: true
     includes: 
       in_header: "highlight/header.html"
     css: "highlight/styles/agate.min.css"
@@ -43,13 +45,25 @@ The code is provided for all languages and the results shown are the output from
 
 ## Install & Load
 
-Use the scripts below to install the DCA functions and load them for use.
+Use the scripts below to install the DCA functions and/or load them for use.
 
 ```{r, echo=FALSE, results='asis'}
 add_tabset_codes("install", eval = FALSE)
 ```
 
-Build model
+## Binary Outcomes
+
+### Univariate Decision Curve Analysis
+
+We'll be working with the example dataset `df_binary` included with the package.
+The dataset includes information on `r nrow(df_binary)` patients who have recently discovered they have a gene mutation that puts them at a higher risk for harboring cancer.
+Each patient has been biopsied and we know their cancer status. 
+It is known that older patients with a family history of cancer have a higher probability of harboring cancer. 
+A clinical chemist has recently discovered a marker that she believes can distinguish between patients with and without cancer. 
+We wish to assess whether or not the new marker does indeed identify patients with and without cancer. 
+If the marker does indeed predict well, many patients will not need to undergo a painful biopsy.
+
+First, we want to confirm family history of cancer is indeed associated with the biopsy result. 
 
 ```{r, echo=FALSE, results='asis'}
 add_tabset_codes("model")

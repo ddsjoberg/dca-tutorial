@@ -29,6 +29,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -223,6 +226,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -230,6 +296,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -278,7 +354,7 @@ $(document).ready(function () {
 <p>Below we will walk through how to perform DCA for binary and time-to-event outcomes using <strong>R</strong>, <strong>Stata</strong>, <strong>SAS</strong>, and <strong>Python</strong>. The code is provided for all languages and the results shown are the output from the <strong>R</strong> DCA functions.</p>
 <div id="install-load" class="section level2">
 <h2>Install &amp; Load</h2>
-<p>Use the scripts below to install the DCA functions and load them for use.</p>
+<p>Use the scripts below to install the DCA functions and/or load them for use.</p>
 <div id="section" class="section level4 tabset tabset-pills">
 <h4 class="tabset tabset-pills"></h4>
 <div id="r" class="section level5">
@@ -308,8 +384,14 @@ filename stdca url &quot;https://raw.githubusercontent.com/ddsjoberg/dca.sas/mai
 <h4 class="unnumbered"></h4>
 <!-- This chunk runs the R code without printing the code (since that is in the tabset). -->
 <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-<p>Build model</p>
 </div>
+</div>
+<div id="binary-outcomes" class="section level2">
+<h2>Binary Outcomes</h2>
+<div id="univariate-decision-curve-analysis" class="section level3">
+<h3>Univariate Decision Curve Analysis</h3>
+<p>We’ll be working with the example dataset <code>df_binary</code> included with the package. The dataset includes information on 750 patients who have recently discovered they have a gene mutation that puts them at a higher risk for harboring cancer. Each patient has been biopsied and we know their cancer status. It is known that older patients with a family history of cancer have a higher probability of harboring cancer. A clinical chemist has recently discovered a marker that she believes can distinguish between patients with and without cancer. We wish to assess whether or not the new marker does indeed identify patients with and without cancer. If the marker does indeed predict well, many patients will not need to undergo a painful biopsy.</p>
+<p>First, we want to confirm family history of cancer is indeed associated with the biopsy result.</p>
 <div id="section-2" class="section level4 tabset tabset-pills">
 <h4 class="tabset tabset-pills"></h4>
 <div id="r-1" class="section level5">
@@ -336,12 +418,12 @@ RUN;</code></pre>
 <div id="section-3" class="section level4 unnumbered">
 <h4 class="unnumbered"></h4>
 <!-- This chunk runs the R code without printing the code (since that is in the tabset). -->
-<div id="xntejciafy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="yfhoeujdwx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xntejciafy .gt_table {
+#yfhoeujdwx .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -366,7 +448,7 @@ RUN;</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#xntejciafy .gt_heading {
+#yfhoeujdwx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -378,7 +460,7 @@ RUN;</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xntejciafy .gt_title {
+#yfhoeujdwx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -388,7 +470,7 @@ RUN;</code></pre>
   border-bottom-width: 0;
 }
 
-#xntejciafy .gt_subtitle {
+#yfhoeujdwx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -398,13 +480,13 @@ RUN;</code></pre>
   border-top-width: 0;
 }
 
-#xntejciafy .gt_bottom_border {
+#yfhoeujdwx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xntejciafy .gt_col_headings {
+#yfhoeujdwx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -419,7 +501,7 @@ RUN;</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xntejciafy .gt_col_heading {
+#yfhoeujdwx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -439,7 +521,7 @@ RUN;</code></pre>
   overflow-x: hidden;
 }
 
-#xntejciafy .gt_column_spanner_outer {
+#yfhoeujdwx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -451,15 +533,15 @@ RUN;</code></pre>
   padding-right: 4px;
 }
 
-#xntejciafy .gt_column_spanner_outer:first-child {
+#yfhoeujdwx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xntejciafy .gt_column_spanner_outer:last-child {
+#yfhoeujdwx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xntejciafy .gt_column_spanner {
+#yfhoeujdwx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -471,7 +553,7 @@ RUN;</code></pre>
   width: 100%;
 }
 
-#xntejciafy .gt_group_heading {
+#yfhoeujdwx .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -493,7 +575,7 @@ RUN;</code></pre>
   vertical-align: middle;
 }
 
-#xntejciafy .gt_empty_group_heading {
+#yfhoeujdwx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -508,15 +590,15 @@ RUN;</code></pre>
   vertical-align: middle;
 }
 
-#xntejciafy .gt_from_md > :first-child {
+#yfhoeujdwx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xntejciafy .gt_from_md > :last-child {
+#yfhoeujdwx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xntejciafy .gt_row {
+#yfhoeujdwx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -535,7 +617,7 @@ RUN;</code></pre>
   overflow-x: hidden;
 }
 
-#xntejciafy .gt_stub {
+#yfhoeujdwx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -547,7 +629,7 @@ RUN;</code></pre>
   padding-left: 12px;
 }
 
-#xntejciafy .gt_summary_row {
+#yfhoeujdwx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -557,7 +639,7 @@ RUN;</code></pre>
   padding-right: 5px;
 }
 
-#xntejciafy .gt_first_summary_row {
+#yfhoeujdwx .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -567,7 +649,7 @@ RUN;</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xntejciafy .gt_grand_summary_row {
+#yfhoeujdwx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -577,7 +659,7 @@ RUN;</code></pre>
   padding-right: 5px;
 }
 
-#xntejciafy .gt_first_grand_summary_row {
+#yfhoeujdwx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -587,11 +669,11 @@ RUN;</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xntejciafy .gt_striped {
+#yfhoeujdwx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xntejciafy .gt_table_body {
+#yfhoeujdwx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -600,7 +682,7 @@ RUN;</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xntejciafy .gt_footnotes {
+#yfhoeujdwx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -614,13 +696,13 @@ RUN;</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xntejciafy .gt_footnote {
+#yfhoeujdwx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#xntejciafy .gt_sourcenotes {
+#yfhoeujdwx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -634,41 +716,41 @@ RUN;</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xntejciafy .gt_sourcenote {
+#yfhoeujdwx .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#xntejciafy .gt_left {
+#yfhoeujdwx .gt_left {
   text-align: left;
 }
 
-#xntejciafy .gt_center {
+#yfhoeujdwx .gt_center {
   text-align: center;
 }
 
-#xntejciafy .gt_right {
+#yfhoeujdwx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xntejciafy .gt_font_normal {
+#yfhoeujdwx .gt_font_normal {
   font-weight: normal;
 }
 
-#xntejciafy .gt_font_bold {
+#yfhoeujdwx .gt_font_bold {
   font-weight: bold;
 }
 
-#xntejciafy .gt_font_italic {
+#yfhoeujdwx .gt_font_italic {
   font-style: italic;
 }
 
-#xntejciafy .gt_super {
+#yfhoeujdwx .gt_super {
   font-size: 65%;
 }
 
-#xntejciafy .gt_footnote_marks {
+#yfhoeujdwx .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -714,9 +796,12 @@ RUN;</code></pre>
 <hr style="height:1px;border:none;color:#333;background-color:#333;" />
 </div>
 </div>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -749,6 +834,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
