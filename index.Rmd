@@ -55,7 +55,7 @@ add_tabset_codes("install", eval = FALSE)
 
 ### Univariate Decision Curve Analysis
 
-We'll be working with the example dataset `df_binary` included with the package.
+We will be working with the example dataset `df_binary` included with the package.
 The dataset includes information on `r nrow(df_binary)` patients who have recently discovered they have a gene mutation that puts them at a higher risk for harboring cancer.
 Each patient has been biopsied and we know their cancer status. 
 It is known that older patients with a family history of cancer have a higher probability of harboring cancer. 
