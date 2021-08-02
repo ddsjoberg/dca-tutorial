@@ -1,16 +1,16 @@
 #### {.tabset .tabset-pills}
 
-##### R
+##### R {{active_r}}
 
 ```{r, r-{{chunk_label}}, eval = FALSE, class='R'}
 ```
 
-##### Stata
+##### Stata {{active_stata}}
 
 ```{stata, stata-{{chunk_label}}, eval = FALSE, class='Stata'}
 ```
 
-##### SAS
+##### SAS {{active_sas}}
 
 ```{sas, sas-{{chunk_label}}, eval = FALSE, class='SAS'}
 ```

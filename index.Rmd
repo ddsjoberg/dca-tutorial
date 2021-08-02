@@ -1,70 +1,45 @@
 ---
-title: "DCA Example"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
-    includes: 
-      in_header: "highlight/header.html"
-    css: "highlight/styles/agate.min.css"
+title: "DCA Tutorial"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.duplicate.label = "allow")
-library(dcurves)
-
-add_tabset_codes <- function(chunk_label, eval = TRUE, echo = FALSE, include = TRUE) {
-  res <-
-    knitr::knit_child(
-      text = unlist(knitr::knit_expand('templates/tabset-template.Rmd')),
-      quiet = TRUE,
-      envir = rlang::caller_env()
-    )
-  cat(res, sep = '\n')
-}
 ```
 
-```{r, read_chunk, include=FALSE}
-knitr::read_chunk("rmd_chunks/r-chunks.R")
-knitr::read_chunk("rmd_chunks/stata-chunks.do")
-knitr::read_chunk("rmd_chunks/sas-chunks.sas")
+```{r, render, echo = FALSE, include=FALSE}
+rmarkdown::render("dca-tutorial.Rmd",
+                  params = list(language = "r", render_all_languages = FALSE),
+                  output_file = "dca-tutorial-r.html")
+rmarkdown::render("dca-tutorial.Rmd",
+                  params = list(language = "stata", render_all_languages = FALSE),
+                  output_file = "dca-tutorial-stata.html")
+rmarkdown::render("dca-tutorial.Rmd",
+                  params = list(language = "sas", render_all_languages = FALSE),
+                  output_file = "dca-tutorial-sas.html")
 ```
 
-Diagnostic and prognostic models are typically evaluated with measures of accuracy that do not address clinical consequences.
-Decision-analytic techniques allow assessment of clinical outcomes but often require collection of additional information and may be cumbersome to apply to models that yield a continuous result.
-Decision curve analysis is a method for evaluating and comparing prediction models that incorporates clinical consequences, requires only the data set on which the models are tested, and can be applied to models that have either continuous or dichotomous results.
-This document will walk you through how to perform a decision curve analysis (DCA) in many settings, and how to interpret the resulting curves. 
-In DCA prediction models are compared to two default strategies: 1) assume that all patients are test positive and therefore treat everyone, or 2) assume that all patients are test negative and offer treatment to no one. 
-"Treatment” is considered in the widest possible sense, not only drugs, radiotherapy or surgery, but advice, further diagnostic procedures or more intensive monitoring.
-For more details on DCA, visit [www.decisioncurveanalysis.org](https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis).
-You'll find the original articles explaining the details of the DCA derivation along with other papers providing more details. 
+## DCA Tutorial
 
-Below we will walk through how to perform DCA for binary and time-to-event outcomes using **R**, **Stata**, **SAS**, and **Python**.
-The code is provided for all languages and the results shown are the output from the **R** DCA functions.
+### Select a language
 
-## Install & Load
+Example code is available in four languages.
 
-Use the scripts below to install the DCA functions and/or load them for use.
-
-```{r, echo=FALSE, results='asis'}
-add_tabset_codes("install", eval = FALSE)
+```{r, echo = FALSE}
+tibble::tibble(
+  r = list(gt::html('<a href="dca-tutorial-r.html"><img src="images/r-icon.png" width="620" /></a>')),
+  stata = list(gt::html('<a href="dca-tutorial-stata.html"><img src="images/stata-icon.png" width="90" /></a>')),
+  sas = list(gt::html('<a href="dca-tutorial-sas.html"><img src="images/sas-icon.png" width="65" /></a>')),
+  python = list(gt::html('<a href="dca-tutorial-python.html"><img src="images/python-icon.png" width="95" /></a>')),
+) |>
+  gt::gt() |>
+  gt::cols_label(r = gt::md("**R**"),
+                 stata = gt::md("**Stata**"),
+                 sas = gt::md("**SAS**"),
+                 python = gt::md("**Python**")) |>
+  gt::cols_width(everything() ~ gt::px(150)) |>
+  gt::opt_table_lines("none")
 ```
 
-## Binary Outcomes
-
-### Univariate Decision Curve Analysis
-
-We will be working with the example dataset `df_binary` included with the package.
-The dataset includes information on `r nrow(df_binary)` patients who have recently discovered they have a gene mutation that puts them at a higher risk for harboring cancer.
-Each patient has been biopsied and we know their cancer status. 
-It is known that older patients with a family history of cancer have a higher probability of harboring cancer. 
-A clinical chemist has recently discovered a marker that she believes can distinguish between patients with and without cancer. 
-We wish to assess whether or not the new marker does indeed identify patients with and without cancer. 
-If the marker does indeed predict well, many patients will not need to undergo a painful biopsy.
-
-First, we want to confirm family history of cancer is indeed associated with the biopsy result. 
-
-```{r, echo=FALSE, results='asis'}
-add_tabset_codes("model")
-```
+Icons from https://icon-icons.com
