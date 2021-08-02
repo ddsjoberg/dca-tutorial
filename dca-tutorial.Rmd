@@ -9,7 +9,6 @@ output:
     css: "highlight/styles/agate.min.css"
 params:
   language: r
-  render_all_languages: true
 ---
 
 ```{r setup, include=FALSE}
