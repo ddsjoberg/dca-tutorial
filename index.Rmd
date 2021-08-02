@@ -9,20 +9,21 @@ options(knitr.duplicate.label = "allow")
 ```
 
 ```{r, render, echo = FALSE, include=FALSE}
-rmarkdown::render("dca-tutorial.Rmd",
-                  params = list(language = "r"),
-                  output_file = "dca-tutorial-r.html")
-rmarkdown::render("dca-tutorial.Rmd",
-                  params = list(language = "stata"),
-                  output_file = "dca-tutorial-stata.html")
-rmarkdown::render("dca-tutorial.Rmd",
-                  params = list(language = "sas"),
-                  output_file = "dca-tutorial-sas.html")
+# rmarkdown::render("dca-tutorial.Rmd",
+#                   params = list(language = "r"),
+#                   output_file = "dca-tutorial-r.html")
+# rmarkdown::render("dca-tutorial.Rmd",
+#                   params = list(language = "stata"),
+#                   output_file = "dca-tutorial-stata.html")
+# rmarkdown::render("dca-tutorial.Rmd",
+#                   params = list(language = "sas"),
+#                   output_file = "dca-tutorial-sas.html")
 ```
 
-### Select a language
-
+Welcome to the tutorial for Decision Curve Analysis.
 Example code is available in four languages.
+
+### Please, select a language
 
 ```{r, echo = FALSE}
 tibble::tibble(
