@@ -21,7 +21,7 @@ rmarkdown::render("dca-tutorial.Rmd",
 ```
 
 Welcome to the tutorial for Decision Curve Analysis.
-Example code is available in four languages.
+The tutorial is available in four languages.
 
 ### Please, select a language
 
