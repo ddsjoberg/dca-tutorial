@@ -32,10 +32,12 @@ tibble::tibble(
   python = list(gt::html('<a href="dca-tutorial-python.html"><img src="images/python-icon.png" width="95" /></a>')),
 ) |>
   gt::gt() |>
-  gt::cols_label(r = gt::md("**R**"),
-                 stata = gt::md("**Stata**"),
-                 sas = gt::md("**SAS**"),
-                 python = gt::md("**Python**")) |>
+  gt::cols_label(
+    r = gt::html('<b><a href="dca-tutorial-r.html"><font color="black">R</a></b>'),
+    stata = gt::html('<b><a href="dca-tutorial-r.html"><font color="black">Stata</a></b>'),
+    sas = gt::html('<b><a href="dca-tutorial-r.html"><font color="black">SAS</a></b>'),
+    python = gt::html('<b><a href="dca-tutorial-r.html"><font color="black">Python</a></b>')
+  ) |>
   gt::cols_width(everything() ~ gt::px(150)) |>
   gt::opt_table_lines("none")
 ```
