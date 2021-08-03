@@ -1,9 +1,16 @@
 ```{r, language-table, echo = FALSE}
+# tibble::tibble(
+#   r = list(gt::html('<a href="dca-tutorial-r.html"><img src="images/r-icon.png" width="620" /></a>')),
+#   stata = list(gt::html('<a href="dca-tutorial-stata.html"><img src="images/stata-icon.png" width="90" /></a>')),
+#   sas = list(gt::html('<a href="dca-tutorial-sas.html"><img src="images/sas-icon.png" width="65" /></a>')),
+#   python = list(gt::html('<a href="dca-tutorial-python.html"><img src="images/python-icon.png" width="95" /></a>')),
+# )
+
 tibble::tibble(
-  r = list(gt::html('<a href="dca-tutorial-r.html"><img src="images/r-icon.png" width="620" /></a>')),
-  stata = list(gt::html('<a href="dca-tutorial-stata.html"><img src="images/stata-icon.png" width="90" /></a>')),
-  sas = list(gt::html('<a href="dca-tutorial-sas.html"><img src="images/sas-icon.png" width="65" /></a>')),
-  python = list(gt::html('<a href="dca-tutorial-python.html"><img src="images/python-icon.png" width="95" /></a>')),
+  r = list(gt::html('<a href="dca-tutorial-r.html"><img src="images/r-icon.png" height="100" /></a>')),
+  stata = list(gt::html('<a href="dca-tutorial-stata.html"><img src="images/stata-icon.png" height="55" /></a>')),
+  sas = list(gt::html('<a href="dca-tutorial-sas.html"><img src="images/sas-icon.png" height="55" /></a>')),
+  python = list(gt::html('<a href="dca-tutorial-python.html"><img src="images/python-icon.png" height="55" /></a>')),
 ) |>
   gt::gt() |>
   gt::cols_label(
