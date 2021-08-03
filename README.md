@@ -8,11 +8,13 @@ Decision Curve Analysis Tutorial
 
 To do list....
 - SAS
-    - [ ] Update to work with case control data
-    - [ ] Add a NEWS.md file to track updates and version releases
+    - [X] Update to work with case control data
+    - [X] Add a NEWS.md file to track updates and version releases
+    - [ ] Review+merge PR
 - Stata
-    - [ ] Update to work with case control data
-    - [ ] Add a NEWS.md file to track updates and version releases
+    - [X] Update to work with case control data
+    - [X] Add a NEWS.md file to track updates and version releases
+    - [ ] Review+merge PR
 - Python
     - [ ] Finish module
     - [ ] Implement unit testing
