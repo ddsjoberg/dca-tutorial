@@ -1,8 +1,11 @@
 ## ---- r-install -----
-# install dcurves, tidyverse, gtsummary, and broom from CRAN
-install.packages(c("dcurves", "tidyverse", "gtsummary", "broom", "survival"))
+# install dcurves to perform DCA, tidyverse, gtsummary, and broom from CRAN
+install.packages("dcurves")
 
-# load package
+# install other packages used in this tutorial
+install.packages(c("tidyverse", "gtsummary", "broom", "survival", "rsample"))
+
+# load packages
 library(dcurves)
 library(tidyverse)
 library(gtsummary)
@@ -177,4 +180,71 @@ dca(Surv(ttcancer, cancer_cr) ~ pr_failure18,
     time = 1.5,
     thresholds = seq(0, 0.5, 0.01)) %>%
   plot(smooth = TRUE)
+
+## ---- r-import_case_control -----
+# import data
+df_cancer_dx_case_control <-
+  readr::read_csv(
+    file = "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv"
+  )
+
+# summarize data
+df_cancer_dx_case_control %>%
+  select(-patientid) %>%
+  tbl_summary(by = casecontrol,
+              type = all_dichotomous() ~ "categorical") %>%
+  modify_spanning_header(all_stat_cols() ~ "**Case-Control Status**")
+
+## ---- r-dca_case_control -----
+dca(casecontrol ~ cancerpredmarker,
+    data = df_cancer_dx_case_control,
+    prevalence = 0.20,
+    thresholds = seq(0, 0.5, 0.01)) %>%
+  plot(smooth = TRUE)
+
+## ---- r-cross_validation -----
+# set seed for random process
+set.seed(112358)
+
+# create a 10-fold cross validation set
+rsample::vfold_cv(df_cancer_dx, v = 10, repeats = 1) %>%
+  # for each cut of the data, build logistic regression on the 90% (analysis set),
+  # and perform DCA on the 10% (assessment set)
+  rowwise() %>%
+  mutate(
+    # build regression model on analysis set
+    glm_analysis =
+      glm(cancer ~ marker + age + famhistory,
+          data = rsample::analysis(splits),
+          family=binomial) %>%
+      list(),
+    # get predictions for assessment set
+    df_assessment =
+      broom::augment(
+        glm_analysis,
+        newdata = rsample::assessment(splits),
+        type.predict = "response"
+      ) %>%
+      list(),
+    # calculate net benefit on assessment set
+    dca_assessment =
+      dca(cancer ~ .fitted,
+          data = df_assessment,
+          thresholds = seq(0, 0.35, 0.01),
+          label = list(.fitted = "Cross-validated Prediction Model")) %>%
+      as_tibble() %>%
+      list()
+  ) %>%
+  # pool results from the 10-fold cross validation
+  pull(dca_assessment) %>%
+  bind_rows() %>%
+  group_by(variable, label, threshold) %>%
+  summarise(net_benefit = mean(net_benefit), .groups = "drop") %>%
+  # plot cross validated net benefit values
+  ggplot(aes(x = threshold, y = net_benefit, color = label)) +
+  stat_smooth(method = "loess", se = FALSE, formula = "y ~ x", span = 0.2) +
+  coord_cartesian(ylim = c(-0.014, 0.14)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "Threshold Probability", y = "Net Benefit", color = "") +
+  theme_bw()
 

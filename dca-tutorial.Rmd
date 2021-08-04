@@ -65,7 +65,7 @@ The code is provided for all languages and the results shown are the output from
 
 Use the scripts below to install the DCA functions and/or load them for use.
 
-```{r, echo=FALSE, results='asis'}
+```{r, install, echo=FALSE, results='asis'}
 add_tabset_codes("install", eval = FALSE)
 ```
 
@@ -89,7 +89,7 @@ The first step is to import your data.
 Once you have the data imported, you’ll want to begin building your model.
 As we have a binary outcome (i.e. the outcome of our model has two levels: cancer or no cancer), we will be using a logistic regression model. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, import_cancer, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("import_cancer")
 ```
 
@@ -97,14 +97,14 @@ add_tabset_codes("import_cancer")
 
 First, we want to confirm family history of cancer is indeed associated with the biopsy result. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, model, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("model")
 ```
 
 Via logistic regression with cancer as the outcome, we can see that family history is related to biopsy outcome with odds ratio `r inline_text(mod1_summary, variable = "famhistory")`.
 The DCA can help us address the clinical utility of using family history to predict biopsy outcome.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_famhistory, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_famhistory")
 ```
 
@@ -113,7 +113,7 @@ For example, it is unlikely that a patient would demand that they had at least a
 accept a biopsy.
 Let’s do the DCA again, this time restricting the output to threshold probabilities a more clinically reasonable range, between 0% and 35%. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_famhistory2, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_famhistory2")
 ```
 
@@ -132,14 +132,14 @@ We wanted to examine the value of a statistical model that incorporates family h
 First we will build the logistic regression model with all three variables, and second we would have saved out the predicted probability of having cancer based on the model.
 Note that in our example data set, this variable actually already exists so it wouldn’t be necessary to create the predicted probabilities once again. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, model_multi, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("model_multi")
 ```
 
 We now want to compare our different approaches to cancer detection: biopsying everyone, biopsying no-one, biopsying on the basis of family history, or biopsying on the basis of a multivariable statistical
 model including the marker, age and family history of cancer. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_multi, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_multi")
 ```
 
@@ -164,7 +164,7 @@ Imagine that a model was published by Brown et al. with respect to our cancer bi
 The authors reported a statistical model with coefficients of 0.75 for a positive family history of cancer; 0.26 for each increased year of age, and an intercept of -17.5.
 To test this formula on our data set: 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, pub_model, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("pub_model")
 ```
 
@@ -195,13 +195,13 @@ All that is required is that appropriate variables are calculated from the data 
 First we would create the variables to represent our joint and conditional approach.
 For our example, let us use 0.15 as the cutoff probability level for patients who had their marker measured and should be biopsied.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, joint, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("joint")
 ```
 
 Now that we have the variables worked out, we can run the decision curve analysis. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_joint, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_joint")
 ```
 
@@ -220,7 +220,7 @@ To construct the decision curves for each strategy we now incorporate harm.
 We have to calculate harm specially for the conditional test, because only patients at intermediate risk are measured for the marker.
 Then incorporate it into our decision curve. The strategy for incorporating harm for the conditional test is by multiplying the proportion scanned by the harm of the scan.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_harm, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_harm")
 ```
 
@@ -240,7 +240,7 @@ For the model itself, we would actually need to first specify that the marker va
 Based on our thresholds, we’d want to begin at 0.05, and by increments of 0.05, stop at 0.35.
 As we are not interested in the graph, we can also specify to suppress the graph from being displayed.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_table, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_table")
 ```
 
@@ -255,7 +255,7 @@ As part of assessing the usefulness of the marker, we would be interested in whe
 This value was the “intervention avoided” column in the table that was saved out.
 To view it graphically, we would only need to specify it in our command. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, dca_intervention, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_intervention")
 ```
 
@@ -273,7 +273,7 @@ We want to build a model of our own based on age, family history, and the marker
 
 We first need to import our data.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, import_ttcancer, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("import_ttcancer")
 ```
 
@@ -293,7 +293,7 @@ If no patient was observed at the exact time of interest, we can use the baselin
 We can then calculate the probability of failure at the specified time point.
 For our example, we will use a time point of 1.5, which would corresponds to the eighteen months that we are interested in. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, coxph, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("coxph")
 ```
 
@@ -303,7 +303,7 @@ For our example, let us not only set the threshold from 0% to 50%, but also add 
 Note that different programs use different smoothers as there is no one smoother that is best in every situation.
 As such, results of a smoothed curve should always be compared with the unsmoothed curve to ensure accuracy. 
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, stdca_coxph, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("stdca_coxph")
 ```
 
@@ -314,8 +314,40 @@ This shows that using the model to inform clinical decisions will lead to superi
 At times, data sets are subject to competing risks. For example in our cancer data set, patients may have died prior to cancer diagnosis.
 To run a competing risk analysis, we first create a failure variable that indicates which patients died before a cancer diagnosis.
 
-```{r, echo=FALSE, message = FALSE, results='asis'}
+```{r, stdca_cmprsk, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("stdca_cmprsk")
 ```
 
 ## DCA in a Case-Control Design
+
+An issue with applying decision curve analysis to case-control data is that net benefit depends on prevalence, and prevalence in case-control studies is fixed by design.
+When working with case-control data, you can pass the population prevalence to accurately calculate the net benefit.
+
+```{r, import_case_control, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("import_case_control")
+```
+
+In the example below, the population prevalence is 20%.
+
+```{r, dca_case_control, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_case_control")
+```
+
+In this example, the model performs worse than a biopsy all strategy from threshold 0% to 17%, and the model has benefit from 18% to 40%.
+
+## Correction for Overfit
+
+As the model created from a data set may include random error (noise) instead of just the relationships between the outcome and predictors, we should take care to correct for overfit when comparing it to other models.
+One such way is by using repeated 10-fold cross validation. 
+The main steps are as follows:
+
+1. Randomly divide the data set into 10 groups of equal size, with equal numbers of events in each group.
+1. Fit the model using all but the first group.
+1. Apply the model created from all but the first group (in step 2), to the first group to obtain the predicted probability of the event.
+1. Repeat steps (2) and (3) leaving out and then applying the fitted model for each of the groups. Every subject now has a predicted probability of the event.
+1. Using the predicted probabilities, compute the net benefit at various threshold probabilities. One approach is to repeat this process many times and take an average.
+1. Although this step is not always done, we will include code for it here. Repeat steps (1) to (5) 200 times. The corrected net benefit for each threshold probability is the mean across the 200 replications.
+
+```{r, cross_validation, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("cross_validation")
+```

@@ -18,6 +18,9 @@ rmarkdown::render("dca-tutorial.Rmd",
 # rmarkdown::render("dca-tutorial.Rmd",
 #                   params = list(language = "sas"),
 #                   output_file = "dca-tutorial-sas.html")
+# rmarkdown::render("dca-tutorial.Rmd",
+#                   params = list(language = "python"),
+#                   output_file = "dca-tutorial-python.html")
 ```
 
 Welcome to the tutorial for Decision Curve Analysis.
