@@ -14,7 +14,7 @@ To do list....
 - Stata
     - [X] Update to work with case control data
     - [X] Add a NEWS.md file to track updates and version releases
-    - [ ] Review+merge PR
+    - [X] Review+merge PR
 - Python
     - [ ] Finish module
     - [ ] Implement unit testing
