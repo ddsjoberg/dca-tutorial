@@ -71,7 +71,7 @@ df_cancer_dx <-
 dca(cancer ~ famhistory + cancerpredmarker,
     data = df_cancer_dx,
     thresholds = seq(0, 0.35, 0.01),
-    label = "Probability of Cancer Diagnosis") %>%
+    label = list(cancerpredmarker = "Probability of Cancer Diagnosis")) %>%
   plot(smooth = TRUE)
 
 ## ---- r-pub_model -----
