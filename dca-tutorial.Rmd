@@ -204,3 +204,113 @@ Now that we have the variables worked out, we can run the decision curve analysi
 ```{r, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("dca_joint")
 ```
+
+This appears to show that the joint test is the better option for the range of threshold probabilities from 5% - 24% since it has the highest net benefit across that range.
+Less than 5%, the clinical option of treating all would be superior to any other option, though rarely would treatment thresholds be so low.
+From 28%-35%, the conditional test would be a slightly better option, and in between the two ranges, the joint and conditional tests are comparable.
+The obvious disadvantage of the joint test is that the marker needs to be measured for everyone, and such tests may be expensive and time consuming. 
+
+#### Incorporating Harms into Model Assessment 
+
+To incorporate the harm of testing and measuring the marker, we ask a clinician, who tells us that, even if the marker were perfectly accurate, few clinicians would conduct more than 30 tests to predict one cancer diagnosis.
+This might be because the test is expensive, or requires some invasive procedure to obtain.
+The “harm” of measuring the marker is the reciprocal of 30, or 0.0333.
+
+To construct the decision curves for each strategy we now incorporate harm.
+We have to calculate harm specially for the conditional test, because only patients at intermediate risk are measured for the marker.
+Then incorporate it into our decision curve. The strategy for incorporating harm for the conditional test is by multiplying the proportion scanned by the harm of the scan.
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_harm")
+```
+
+Here the conditional test is clearly the best option (above the 8% treatment threshold), in fact, once you take into account the harm of measuring the marker, it is clearly not worth measuring the marker for everyone: the net benefit of just treating high risk patients is often higher than that of the joint test. 
+
+#### Saving out Net Benefit Values
+
+For any model assessed through decision curve analysis, if we also wanted to show the net benefits in a table, we could save them out.
+We would simply need to specify the name of the file we’d like it to be saved as.
+For a particular range of value, we would only need to specify what threshold to start, stop, and the increment we’d like to use. To assess or display the increase in net benefit we’d simply need to subtract the net benefit of the model based on treating all patients from the net benefit of our model.
+
+Let us imagine that we want to view the net benefit of using only the marker to predict whether a
+patient has cancer, compared with the net benefits of biopsying all patients at thresholds of 5%, 10%,
+15% ... 35%.
+
+For the model itself, we would actually need to first specify that the marker variable – unlike those of any of the models before – is not a probability.
+Based on our thresholds, we’d want to begin at 0.05, and by increments of 0.05, stop at 0.35.
+As we are not interested in the graph, we can also specify to suppress the graph from being displayed.
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_table")
+```
+
+The saved table lists the range of threshold probability that we specified, followed by the net benefits of treating all, none, our specified model, intervention avoided (we discuss this below), and the newly created variable which represent the increase in net benefits of our model using only the marker.
+
+Net benefit has a ready clinical interpretation.
+The value of 0.03 at a threshold probability of 20% can be interpreted as: “Comparing to conducting no biopsies, biopsying on the basis of the marker is the equivalent of a strategy that found 3 cancers per hundred patients without conducting any unnecessary biopsies.”
+
+#### Interventions Avoided 
+
+As part of assessing the usefulness of the marker, we would be interested in whether using this marker to identify patients with and without cancer would help reduce unnecessary biopsies.
+This value was the “intervention avoided” column in the table that was saved out.
+To view it graphically, we would only need to specify it in our command. 
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_intervention")
+```
+
+At a probability threshold of 15%, the net reduction in interventions is about 33 per 100 patients.
+In other words, at this probability threshold, biopsying patients on the basis of the marker is the equivalent of a strategy that reduced the biopsy rate by 33%, without missing any cancers. 
+
+## Decision Curve Analysis for Survival Outcomes 
+
+### Motivating Example
+
+Patients had a marker measured and were followed to determine whether they were eventually diagnosed with cancer, as well as the time to that diagnosis or censoring.
+We want to build a model of our own based on age, family history, and the marker, and assess how well the model predicts cancer diagnosis within 1.5 years. 
+
+### Basic Data Set-up
+
+We first need to import our data.
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("import_ttcancer")
+```
+
+The survival probability to any time-point can be derived from any type of survival model; here we use a Cox as this is the most common model in statistical practice.
+The formula for a survival probability from a Cox model is given by
+
+$$
+S(t|X) = S_0(t)^{e^{X\beta}}
+$$
+
+Where $X$ is matrix of covariates in the Cox model, $\beta$ is a vector containing the parameter estimates from the Cox model, and $S_0(t)$ is the baseline survival probability to time t.
+
+To get such values within our code, we will run a Cox model with age, family history, and the marker, as predictors, save out the baseline survival function in a new variable, and obtaining the linear prediction from the model for each subject.
+
+We then obtain the baseline survival probability to our time point of interest.
+If no patient was observed at the exact time of interest, we can use the baseline survival probability to the observed time closest to, but not after, the time point.
+We can then calculate the probability of failure at the specified time point.
+For our example, we will use a time point of 1.5, which would corresponds to the eighteen months that we are interested in. 
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("coxph")
+```
+
+The code for running the decision curve analysis is straightforward after the probability of failure is calculated.
+All we have to do is specify the time point we are interested in.
+For our example, let us not only set the threshold from 0% to 50%, but also add smoothing.
+Note that different programs use different smoothers as there is no one smoother that is best in every situation.
+As such, results of a smoothed curve should always be compared with the unsmoothed curve to ensure accuracy. 
+
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("stdca_coxph")
+```
+
+This shows that using the model to inform clinical decisions will lead to superior outcomes for any decision associated with a threshold probability of above 2% or so.
+
+### Decision Curve Analysis with Competing Risks 
+
+At times, data sets are subject to competing risks. For example in our cancer data set, patients may have died prior to cancer diagnosis.
+To run a competing risk analysis, we first create a failure variable that indicates which patients died before a cancer diagnosis.
+
