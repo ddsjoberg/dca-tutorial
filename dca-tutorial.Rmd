@@ -69,7 +69,7 @@ Use the scripts below to install the DCA functions and/or load them for use.
 add_tabset_codes("install", eval = FALSE)
 ```
 
-## Binary Outcomes
+## DCA for Binary Outcomes
 
 ### Motivating Example
 
@@ -262,7 +262,7 @@ add_tabset_codes("dca_intervention")
 At a probability threshold of 15%, the net reduction in interventions is about 33 per 100 patients.
 In other words, at this probability threshold, biopsying patients on the basis of the marker is the equivalent of a strategy that reduced the biopsy rate by 33%, without missing any cancers. 
 
-## Decision Curve Analysis for Survival Outcomes 
+## DCA for Survival Outcomes 
 
 ### Motivating Example
 
@@ -309,8 +309,13 @@ add_tabset_codes("stdca_coxph")
 
 This shows that using the model to inform clinical decisions will lead to superior outcomes for any decision associated with a threshold probability of above 2% or so.
 
-### Decision Curve Analysis with Competing Risks 
+### DCA with Competing Risks 
 
 At times, data sets are subject to competing risks. For example in our cancer data set, patients may have died prior to cancer diagnosis.
 To run a competing risk analysis, we first create a failure variable that indicates which patients died before a cancer diagnosis.
 
+```{r, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("stdca_cmprsk")
+```
+
+## DCA in a Case-Control Design

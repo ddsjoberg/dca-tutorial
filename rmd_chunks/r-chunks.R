@@ -161,3 +161,20 @@ dca(Surv(ttcancer, cancer) ~ pr_failure18,
     time = 1.5,
     thresholds = seq(0, 0.5, 0.01)) %>%
   plot(smooth = TRUE)
+
+
+## ---- r-stdca_cmprsk -----
+df_time_to_cancer_dx <-
+  df_time_to_cancer_dx %>%
+  mutate(
+    cancer_cr =
+      factor(cancer_cr,
+             levels = c("censor", "diagnosed with cancer", "dead other causes"))
+  )
+
+dca(Surv(ttcancer, cancer_cr) ~ pr_failure18,
+    data = df_time_to_cancer_dx,
+    time = 1.5,
+    thresholds = seq(0, 0.5, 0.01)) %>%
+  plot(smooth = TRUE)
+
