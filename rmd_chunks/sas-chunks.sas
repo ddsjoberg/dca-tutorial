@@ -6,8 +6,40 @@ filename stdca url "https://raw.githubusercontent.com/ddsjoberg/dca.sas/main/std
 %include dca;
 %include stdca;
 
+## ---- sas-import_cancer -----
+
 ## ---- sas-model -----
-/* build logistic regression model */
-PROC LOGISTIC DATA = test DESCENDING;
-  MODEL am = mpg;
-RUN;
+
+## ---- sas-dca_famhistory -----
+
+## ---- sas-dca_famhistory2 -----
+
+## ---- sas-model_multi -----
+
+## ---- sas-dca_multi -----
+
+## ---- sas-pub_model -----
+
+## ---- sas-joint -----
+
+## ---- sas-dca_joint -----
+
+## ---- sas-dca_harm -----
+
+## ---- sas-dca_table -----
+
+## ---- sas-dca_intervention -----
+
+## ---- sas-import_ttcancer -----
+
+## ---- sas-coxph -----
+
+## ---- sas-stdca_coxph -----
+
+## ---- sas-stdca_cmprsk -----
+
+## ---- sas-import_case_control -----
+
+## ---- sas-dca_case_control -----
+
+## ---- sas-cross_validation -----

@@ -5,20 +5,20 @@
 ```{r, r-{{chunk_label}}, eval = FALSE, class='R'}
 ```
 
-<!-- ##### Stata {{active_stata}} -->
+##### Stata {{active_stata}}
 
-<!-- ```{stata, stata-{{chunk_label}}, eval = FALSE, class='Stata'} -->
-<!-- ``` -->
+```{stata, stata-{{chunk_label}}, eval = FALSE, class='Stata'}
+```
 
-<!-- ##### SAS {{active_sas}} -->
+##### SAS {{active_sas}}
 
-<!-- ```{sas, sas-{{chunk_label}}, eval = FALSE, class='SAS'} -->
-<!-- ``` -->
+```{sas, sas-{{chunk_label}}, eval = FALSE, class='SAS'}
+```
 
-<!-- ##### Python {{active_sas}} -->
+##### Python {{active_python}}
 
-<!-- ```{python, python-{{chunk_label}}, eval = FALSE, class='Python'} -->
-<!-- ``` -->
+```{python, python-{{chunk_label}}, eval = FALSE, class='Python'}
+```
 
 #### {-}
 

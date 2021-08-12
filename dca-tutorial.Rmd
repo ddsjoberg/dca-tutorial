@@ -29,6 +29,7 @@ add_tabset_codes <- function(chunk_label, eval = TRUE, echo = FALSE,
   active_r <- ifelse(language %in% "r", "{.active}", "")
   active_stata <- ifelse(language %in% "stata", "{.active}", "")
   active_sas <- ifelse(language %in% "sas", "{.active}", "")
+  active_python <- ifelse(language %in% "python", "{.active}", "")
   
   res <-
     knitr::knit_child(
@@ -42,8 +43,9 @@ add_tabset_codes <- function(chunk_label, eval = TRUE, echo = FALSE,
 
 ```{r, read_chunk, include=FALSE}
 knitr::read_chunk("rmd_chunks/r-chunks.R")
-# knitr::read_chunk("rmd_chunks/stata-chunks.do")
-# knitr::read_chunk("rmd_chunks/sas-chunks.sas")
+knitr::read_chunk("rmd_chunks/stata-chunks.do")
+knitr::read_chunk("rmd_chunks/sas-chunks.sas")
+knitr::read_chunk("rmd_chunks/python-chunks.py")
 ```
 
 ## Introduction

@@ -90,7 +90,7 @@ dca(cancer ~ phat_brown,
   plot(smooth = TRUE)
 
 ## ---- r-joint -----
-#Create a variable for the strategy of treating only high risk patients
+# Create a variable for the strategy of treating only high risk patients
 df_cancer_dx <-
   df_cancer_dx %>%
   mutate(
