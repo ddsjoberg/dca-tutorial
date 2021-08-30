@@ -129,7 +129,10 @@ stset ttcancer, f(status=1)
 stdca pr_failure18, timepoint(1.5) compet1(2) smooth xstop(.5)
 
 ## ---- stata-import_case_control -----
+* import data
+import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv", clear
 
 ## ---- stata-dca_case_control -----
+dca casecontrol cancerpredmarker, prevalence(0.20) xstop(0.50)
 
 ## ---- stata-cross_validation -----

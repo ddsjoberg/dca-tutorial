@@ -707,6 +707,13 @@
       "Repository": "CRAN",
       "Hash": "463642747f81879e6752485aefb831cf"
     },
+    "png": {
+      "Package": "png",
+      "Version": "0.1-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "03b7076c234cb3331288919983326c55"
+    },
     "praise": {
       "Package": "praise",
       "Version": "1.0.0",
@@ -818,6 +825,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "8482bbeef0c194ac236aef7c51ee375f"
+    },
+    "reticulate": {
+      "Package": "reticulate",
+      "Version": "1.20",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "30ab0ea8c8d3dd16a3fa06903449bbfb"
     },
     "rlang": {
       "Package": "rlang",
