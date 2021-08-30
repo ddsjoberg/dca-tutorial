@@ -136,3 +136,88 @@ import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/
 dca casecontrol cancerpredmarker, prevalence(0.20) xstop(0.50)
 
 ## ---- stata-cross_validation -----
+* Load Original Dataset
+use "dca.dta", clear
+* To skip this optional loop used for running the cross validation multiple times
+* either 1) change it to “forvalues i=1(1)1 {” or
+* 2) omit this line of code and take care to change any code which references “i”
+forvalues i=1(1)200 {
+  * Local macros to store the names of model.
+  local prediction1 = "base"
+  local prediction2 = "full"
+  * Create variables to later store probabilities from each prediction model
+  quietly g `prediction1'=.
+  quietly g `prediction2'=.
+
+  * Create a variable to be used to ‘randomize’ the patients.
+  quietly g u = uniform()
+  * Sort by the event to ensure equal number of patients with the event are in each
+  * group
+  sort cancer u
+  * Assign each patient into one of ten groups
+  g group = mod(_n, 10) + 1
+
+  * Loop through to run through for each of the ten groups
+    forvalues j=1(1)10 {
+    * First for the “base” model:
+    * Fit the model excluding the jth group.
+    quietly logit cancer age famhistory if group!=`j'
+    * Predict the probability of the jth group.
+    quietly predict ptemp if group==`j'
+    * Store the predicted probabilities of the jth group (that was not used in
+    * creating the model) into the variable previously created
+    quietly replace `prediction1`num'' = ptemp if group==`j'
+    * Dropping the temporary variable that held predicted probabilities for all
+    * patients
+    drop ptemp
+    * Likewise, for the second “final” model
+    quietly logit cancer age famhistory marker if group!=`j'
+    quietly predict ptemp if group==`j'
+    quietly replace `prediction2' = ptemp if group==`j'
+    drop ptemp
+  }
+
+  * Loop through to run through for each of the ten groups
+  forvalues j=1(1)10 {
+  * First for the “base” model:
+  * Fit the model excluding the jth group.
+  quietly logit cancer age famhistory if group!=`j'
+  * Predict the probability of the jth group.
+  quietly predict ptemp if group==`j'
+  * Store the predicted probabilities of the jth group (that was not used in
+  * creating the model) into the variable previously created
+  quietly replace `prediction1`num'' = ptemp if group==`j'
+  * Dropping the temporary variable that held predicted probabilities for all
+  * patients
+  drop ptemp
+  * Likewise, for the second “final” model
+  quietly logit cancer age famhistory marker if group!=`j'
+  quietly predict ptemp if group==`j'
+  quietly replace `prediction2' = ptemp if group==`j'
+  drop ptemp
+}
+
+* It is also necessary for those who avoided the multiple cross validation
+* by changing the value of the forvalues loop from 200 to 1*/
+* The following is only used for the multiple 10 fold cross validations.
+use "`dca1'", clear
+forvalues i=2(1)200 {
+  * Append all values of the multiple cross validations into the first
+  * file
+  append using "`dca`i''"
+}
+
+* Calculate the average net benefit across all iterations of the multiple
+* cross validation
+collapse all none base full base_i full_i, by(threshold)
+save "Cross Validation DCA Output.dta", replace
+
+* Labeling the variables so that the legend will have the proper labels
+label var all "(Mean) Net Benefit: Treat All"
+label var none "(Mean) Net Benefit: Treat None"
+label var base "(Mean) Net Benefit: Base Model"
+label var full "(Mean) Net Benefit: Full Model"
+label var base_i "(Mean) Intervention: Base Model"
+label var full_i "{Mean) Intervention: Full Model"
+* Plotting the figure of all the net benefits.
+twoway (line all threshold if all>-0.05, sort) || (line none base full threshold, sort)
