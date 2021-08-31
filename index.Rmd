@@ -3,6 +3,8 @@ title: "Decision Curve Analysis Tutorial"
 output: html_document
 ---
 
+<meta http-equiv="Refresh" content="0; url='https://www.danieldsjoberg.com/dca-tutorial/dca-tutorial-r.html'" /> 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.duplicate.label = "allow")
@@ -24,11 +26,4 @@ rmarkdown::render("dca-tutorial.Rmd",
 ```
 
 Welcome to the tutorial for Decision Curve Analysis.
-The tutorial is available in four languages.
-
-### Please, select a language
-
-```{r, child = 'language-table-chunk.Rmd'}
-```
-
-Icons from https://icon-icons.com
+You're being redirected to https://www.danieldsjoberg.com/dca-tutorial/dca-tutorial-r.html
