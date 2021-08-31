@@ -89,7 +89,7 @@ tibble::tibble(
     style = gt::cell_borders(
       sides = "top",
       color = "#000000",
-      weight = gt::px(2)
+      weight = gt::px(4)
     ),
     locations = gt::cells_column_labels(all_of(params$language))
   )
