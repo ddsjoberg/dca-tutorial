@@ -6,6 +6,15 @@ net install dca, from("https://raw.github.com/ddsjoberg/dca.stata/master/") repl
 * import data
 import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx.csv", clear
 
+* assign variable labels. these labels will be carried through in the DCA output
+label variable patientid "Patient ID"
+label variable cancer "Cancer Diagnosis"
+label variable risk_group "Risk Group"
+label variable age "Patient Age"
+label variable famhistory "Family History"
+label variable marker "Marker"
+label variable cancerpredmarker "Probability of Cancer Diagnosis"
+
 ## ---- stata-model -----
 * Test whether family history is associated with cancer
 logit cancer famhistory
@@ -93,6 +102,17 @@ dca cancer marker, prob(no) intervention xstart(0.05) xstop(0.35)
 * import data
 import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_time_to_cancer_dx.csv", clear
 
+* assign variable labels. these labels will be carried through in the DCA output
+label variable patientid "Patient ID"
+label variable cancer "Cancer Diagnosis"
+label variable ttcancer "Years to Diagnosis/Censor"
+label variable risk_group "Risk Group"
+label variable age "Patient Age"
+label variable famhistory "Family History"
+label variable marker "Marker"
+label variable cancerpredmarker "Probability of Cancer Diagnosis"
+label variable cancer_cr "Cancer Diagnosis Status"
+
 * Declaring survival time data: follow-up time variable is ttcancer and the event is cancer
 stset ttcancer, f(cancer)
 
@@ -118,6 +138,7 @@ label var pr_failure18 "Probability of Failure at 18 months"
 stdca pr_failure18, timepoint(1.5) xstop(0.5) smooth
 
 ## ---- stata-stdca_cmprsk -----
+* Define the competing events status variable
 g status = 0
 replace status = 1 if cancer==1
 replace status = 2 if cancer==0 & dead==1
@@ -131,6 +152,14 @@ stdca pr_failure18, timepoint(1.5) compet1(2) smooth xstop(.5)
 ## ---- stata-import_case_control -----
 * import data
 import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv", clear
+
+label variable patientid "Patient ID"
+label variable casecontrol "Case-Control Status"
+label variable risk_group "Risk Group"
+label variable age "Patient Age"
+label variable famhistory "Family History"
+label variable marker "Marker"
+label variable cancerpredmarker "Probability of Cancer Diagnosis"
 
 ## ---- stata-dca_case_control -----
 dca casecontrol cancerpredmarker, prevalence(0.20) xstop(0.50)

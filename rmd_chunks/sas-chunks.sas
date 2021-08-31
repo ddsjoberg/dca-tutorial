@@ -12,6 +12,19 @@ FILENAME data_cancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutori
 PROC IMPORT FILE = data_cancer OUT = work.data_cancer DBMS = CSV;
 RUN;
 
+# assign variable labels. these labels will be carried through in the DCA output
+DATA data_cancer;
+  SET data_cancer;
+
+  LABEL patientid = "Patient ID"
+        casecontrol = "Case-Control Status"
+        risk_group = "Risk Group"
+        age = "Patient Age"
+        famhistory = "Family History"
+        marker = "Marker"
+        cancerpredmarker = "Probability of Cancer Diagnosis";
+RUN;
+
 ## ---- sas-model -----
 * Test whether family history is associated with cancer;
 PROC LOGISTIC DATA = data_cancer DESCENDING;
@@ -123,6 +136,21 @@ FILENAME data_ttcancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tuto
 PROC IMPORT FILE = data_ttcancer OUT = work.data_ttcancer DBMS = CSV;
 RUN;
 
+DATA data_ttcancer;
+  SET data_ttcancer;
+
+  LABEL patientid = "Patient ID"
+        cancer = "Cancer Diagnosis"
+        ttcancer = "Years to Diagnosis/Censor"
+        risk_group = "Risk Group"
+        age = "Patient Age"
+        famhistory = "Family History"
+        marker = "Marker"
+        cancerpredmarker = "Probability of Cancer Diagnosis"
+        cancer_cr = "Cancer Diagnosis Status";
+
+RUN;
+
 ## ---- sas-coxph -----
 * Run the Cox model;
 PROC PHREG DATA=stdca;
@@ -160,6 +188,7 @@ RUN;
        timepoint = 1.5, predictors = pr_failure18, xstop = 0.5);
 
 ## ---- sas-stdca_cmprsk -----
+* Define the competing events status variable
 DATA data_ttcancer;
   SET data_ttcancer;
   status = 0;
@@ -176,6 +205,18 @@ RUN;
 FILENAME data_case_control URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv";
 
 PROC IMPORT FILE = data_case_control OUT = work.data_case_control DBMS = CSV;
+RUN;
+
+DATA data_case_control;
+  SET data_case_control;
+
+  LABEL patientid = "Patient ID"
+        casecontrol = "Case-Control Status"
+        risk_group = "Risk Group"
+        age = "Patient Age"
+        famhistory = "Family History"
+        marker = "Marker"
+        cancerpredmarker = "Probability of Cancer Diagnosis";
 RUN;
 
 ## ---- sas-dca_case_control -----

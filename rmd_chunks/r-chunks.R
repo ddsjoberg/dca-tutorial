@@ -1,10 +1,10 @@
 ## ---- r-install -----
-# install dcurves to perform DCA, tidyverse, gtsummary, and broom from CRAN
+# install dcurves to perform DCA from CRAN
 install.packages("dcurves")
 
 # install other packages used in this tutorial
-install.packages(c("tidyverse", "survival", "gtsummary",
-                   "broom", "rsample", "labelled", "gt"))
+install.packages(c("tidyverse", "survival", "gt", "broom",
+                   "gtsummary", "rsample", "labelled"))
 
 # load packages
 library(dcurves)
@@ -199,6 +199,8 @@ dca(Surv(ttcancer, cancer) ~ pr_failure18,
 
 
 ## ---- r-stdca_cmprsk -----
+# status variable must be a factor with first level coded as 'censor',
+# and the second level the outcome of interest.
 df_time_to_cancer_dx <-
   df_time_to_cancer_dx %>%
   mutate(
