@@ -7,12 +7,12 @@ FILENAME stdca URL "https://raw.githubusercontent.com/ddsjoberg/dca.sas/main/std
 %INCLUDE stdca;
 
 ## ---- sas-import_cancer -----
-FILENAME data_cancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx.csv";
+FILENAME cancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx.csv";
 
-PROC IMPORT FILE = data_cancer OUT = work.data_cancer DBMS = CSV;
+PROC IMPORT FILE = cancer OUT = work.data_cancer DBMS = CSV;
 RUN;
 
-# assign variable labels. these labels will be carried through in the DCA output
+* assign variable labels. these labels will be carried through in the DCA output;
 DATA data_cancer;
   SET data_cancer;
 
@@ -113,7 +113,7 @@ RUN;
      harm = 0 &harm_marker. &harm_conditional., xstop = 0.35);
 
 ## ---- sas-dca_table -----
-*Run the decision curve and save out net benefit results, specify xby=0.05 since we want 5% increments;
+* Run the decision curve and save out net benefit results, specify xby=0.05 since we want 5% increments;
 %DCA(data = data_cancer, outcome = cancer, predictors = marker,
      probability = no, xstart = 0.05,
      xstop = 0.35, xby = 0.05, graph = no, out = dcamarker);
@@ -123,7 +123,7 @@ DATA dcamarker;
   SET dcamarker;
   * Calculate difference between marker and treat all;
   * Our standard approach is to biopsy everyone so this tells us how much better we do with the marker;
-  advantage = marker - all
+  advantage = marker - all;
 RUN;
 
 ## ---- sas-dca_intervention -----
@@ -131,9 +131,9 @@ RUN;
      intervention = yes, xstart = 0.05, xstop = 0.35);
 
 ## ---- sas-import_ttcancer -----
-FILENAME data_ttcancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_time_to_cancer_dx.csv";
+FILENAME ttcancer URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_time_to_cancer_dx.csv";
 
-PROC IMPORT FILE = data_ttcancer OUT = work.data_ttcancer DBMS = CSV;
+PROC IMPORT FILE = ttcancer OUT = work.data_ttcancer DBMS = CSV;
 RUN;
 
 DATA data_ttcancer;
@@ -188,7 +188,7 @@ RUN;
        timepoint = 1.5, predictors = pr_failure18, xstop = 0.5);
 
 ## ---- sas-stdca_cmprsk -----
-* Define the competing events status variable
+* Define the competing events status variable;
 DATA data_ttcancer;
   SET data_ttcancer;
   status = 0;
@@ -202,9 +202,9 @@ RUN;
        predictors = pr_failure18, competerisk = yes, xstop = 0.5);
 
 ## ---- sas-import_case_control -----
-FILENAME data_case_control URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv";
+FILENAME case_con URL "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx_case_control.csv";
 
-PROC IMPORT FILE = data_case_control OUT = work.data_case_control DBMS = CSV;
+PROC IMPORT FILE = case_con OUT = work.data_case_control DBMS = CSV;
 RUN;
 
 DATA data_case_control;

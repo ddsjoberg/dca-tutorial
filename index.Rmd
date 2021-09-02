@@ -3,6 +3,7 @@ title: "Decision Curve Analysis Tutorial"
 output: html_document
 ---
 
+<!-- auto redirecting users to the tutorial -->
 <meta http-equiv="Refresh" content="0; url='https://www.danieldsjoberg.com/dca-tutorial/dca-tutorial-r.html'" /> 
 
 ```{r setup, include=FALSE}

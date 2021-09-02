@@ -32,6 +32,7 @@ dca cancer famhistory, xstop(0.35) xlabel(0(0.05)0.35)
 logit cancer marker age famhistory
 
 * save out predictions in the form of probabilities
+capture drop cancerpredmarker
 predict cancerpredmarker
 
 ## ---- stata-dca_multi -----
@@ -92,10 +93,15 @@ use "DCA Output marker.dta", clear
 * Calculate difference between marker and treat all
 * Our standard approach is to biopsy everyone so this tells us
 * how much better we do with the marker
-g advantage = marker – all
+g advantage = marker - all
 label var advantage "Increase in net benefit from using Marker model"
 
 ## ---- stata-dca_intervention -----
+* import data
+import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx.csv", clear
+label variable marker "Marker"
+
+* net interventions avoided
 dca cancer marker, prob(no) intervention xstart(0.05) xstop(0.35)
 
 ## ---- stata-import_ttcancer -----
@@ -139,9 +145,9 @@ stdca pr_failure18, timepoint(1.5) xstop(0.5) smooth
 
 ## ---- stata-stdca_cmprsk -----
 * Define the competing events status variable
-g status = 0
-replace status = 1 if cancer==1
-replace status = 2 if cancer==0 & dead==1
+g status = 0 if cancer_cr == "censor"
+	replace status = 1 if cancer_cr == "dead other causes"
+	replace status = 2 if cancer_cr == "diagnosed with cancer"
 
 * We declare our survival data with the new event variable
 stset ttcancer, f(status=1)
@@ -166,7 +172,8 @@ dca casecontrol cancerpredmarker, prevalence(0.20) xstop(0.50)
 
 ## ---- stata-cross_validation -----
 * Load Original Dataset
-use "dca.dta", clear
+import delimited "https://raw.githubusercontent.com/ddsjoberg/dca-tutorial/main/data/df_cancer_dx.csv", clear
+
 * To skip this optional loop used for running the cross validation multiple times
 * either 1) change it to “forvalues i=1(1)1 {” or
 * 2) omit this line of code and take care to change any code which references “i”
@@ -187,52 +194,45 @@ forvalues i=1(1)200 {
   g group = mod(_n, 10) + 1
 
   * Loop through to run through for each of the ten groups
-    forvalues j=1(1)10 {
-    * First for the “base” model:
-    * Fit the model excluding the jth group.
-    quietly logit cancer age famhistory if group!=`j'
-    * Predict the probability of the jth group.
-    quietly predict ptemp if group==`j'
-    * Store the predicted probabilities of the jth group (that was not used in
-    * creating the model) into the variable previously created
-    quietly replace `prediction1`num'' = ptemp if group==`j'
-    * Dropping the temporary variable that held predicted probabilities for all
-    * patients
-    drop ptemp
-    * Likewise, for the second “final” model
-    quietly logit cancer age famhistory marker if group!=`j'
-    quietly predict ptemp if group==`j'
-    quietly replace `prediction2' = ptemp if group==`j'
-    drop ptemp
+  forvalues j=1(1)10 {
+  	* First for the “base” model:
+  	* Fit the model excluding the jth group.
+  	quietly logit cancer age famhistory if group!=`j'
+  	* Predict the probability of the jth group.
+  	quietly predict ptemp if group==`j'
+  	* Store the predicted probabilities of the jth group (that was not used in
+  	* creating the model) into the variable previously created
+  	quietly replace `prediction1' = ptemp if group==`j'
+  	* Dropping the temporary variable that held predicted probabilities for all
+  	* patients
+  	drop ptemp
+  	* Likewise, for the second “final” model
+  	quietly logit cancer age famhistory marker if group!=`j'
+  	quietly predict ptemp if group==`j'
+  	quietly replace `prediction2' = ptemp if group==`j'
+  	drop ptemp
   }
 
-  * Loop through to run through for each of the ten groups
-  forvalues j=1(1)10 {
-  * First for the “base” model:
-  * Fit the model excluding the jth group.
-  quietly logit cancer age famhistory if group!=`j'
-  * Predict the probability of the jth group.
-  quietly predict ptemp if group==`j'
-  * Store the predicted probabilities of the jth group (that was not used in
-  * creating the model) into the variable previously created
-  quietly replace `prediction1`num'' = ptemp if group==`j'
-  * Dropping the temporary variable that held predicted probabilities for all
-  * patients
-  drop ptemp
-  * Likewise, for the second “final” model
-  quietly logit cancer age famhistory marker if group!=`j'
-  quietly predict ptemp if group==`j'
-  quietly replace `prediction2' = ptemp if group==`j'
-  drop ptemp
-}
+  * Creating a temporary file to store the results of each of the iterations of our
+  * decision curve for the multiple the 10 fold cross validation
+  * This step may omitted if the optional forvalues loop was excluded.
+  tempfile dca`i'
+
+  * Run decision curve, and save the results to the tempfile.
+  * For those excluding the optional multiple cross validation, this decision curve
+  * (to be seen by excluding “nograph”) and the results (saved under the name of your
+  * choosing) would be the decision curve corrected for overfit.
+  quietly dca cancer `prediction1' `prediction2', xstop(.5) nograph ///
+  saving("`dca`i''")
+  drop u group `prediction1' `prediction2'
+} // This closing bracket ends the initial loop for the multiple cross validation.
 
 * It is also necessary for those who avoided the multiple cross validation
 * by changing the value of the forvalues loop from 200 to 1*/
 * The following is only used for the multiple 10 fold cross validations.
 use "`dca1'", clear
 forvalues i=2(1)200 {
-  * Append all values of the multiple cross validations into the first
-  * file
+  * Append all values of the multiple cross validations into the first file
   append using "`dca`i''"
 }
 
@@ -248,5 +248,6 @@ label var base "(Mean) Net Benefit: Base Model"
 label var full "(Mean) Net Benefit: Full Model"
 label var base_i "(Mean) Intervention: Base Model"
 label var full_i "{Mean) Intervention: Full Model"
+
 * Plotting the figure of all the net benefits.
 twoway (line all threshold if all>-0.05, sort) || (line none base full threshold, sort)
