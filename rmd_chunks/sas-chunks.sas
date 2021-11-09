@@ -17,7 +17,7 @@ DATA data_cancer;
   SET data_cancer;
 
   LABEL patientid = "Patient ID"
-        casecontrol = "Case-Control Status"
+        cancer = "Cancer Diagnosis"
         risk_group = "Risk Group"
         age = "Patient Age"
         famhistory = "Family History"
@@ -220,7 +220,7 @@ DATA data_case_control;
 RUN;
 
 ## ---- sas-dca_case_control -----
-%DCA(data = data_case_control, outcome = cancer,
+%DCA(data = data_case_control, outcome = casecontrol,
      predictors = cancerpredmarker, prevalence = 0.20);
 
 ## ---- sas-cross_validation -----
@@ -230,7 +230,7 @@ RUN;
   %DO x = 1 %TO 200;
     *Load original data and create a variable to be used to 'randomize' patients;
     DATA dca_of;
-      SET home.origdca;
+      SET data_cancer;
       u = RAND("Uniform");
       RUN;
       *Sort by the event to ensure equal number of patients with the event are in
