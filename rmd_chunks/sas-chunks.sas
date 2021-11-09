@@ -33,10 +33,10 @@ RUN;
 
 ## ---- sas-dca_famhistory -----
 * Run the decision curve: family history is coded as 0 or 1, i.e. a probability, so no need to specify the “probability” option;
-%DCA(data = dca, outcome = cancer, predictors = famhistory, graph = yes);
+%DCA(data = famhistory, outcome = cancer, predictors = famhistory, graph = yes);
 
 ## ---- sas-dca_famhistory2 -----
-%DCA(data = dca, outcome = cancer, predictors = famhistory, graph = yes, xstop = 0.35);
+%DCA(data = famhistory, outcome = cancer, predictors = famhistory, graph = yes, xstop = 0.35);
 
 ## ---- sas-model_multi -----
 * run the multivariable model;
@@ -47,7 +47,7 @@ PROC LOGISTIC DATA = data_cancer DESCENDING;
 RUN;
 
 ## ---- sas-dca_multi -----
-%DCA(data = dca, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35);
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35);
 
 ## ---- sas-pub_model -----
 DATA data_cancer;
@@ -243,71 +243,72 @@ RUN;
     DATA dca_of;
       SET dca_of;
       group=MOD(_n_,10) + 1;
-      RUN;
-      *Loop through to run through for each of the ten groups;
-      %DO y = 1 %TO 10;
+    RUN;
+
+    *Loop through to run through for each of the ten groups;
+    %DO y = 1 %TO 10;
       *First for the "base" model, fit the model excluding the yth group.;
       PROC LOGISTIC DATA=dca_of OUTMODEL=base&y. DESCENDING NOPRINT;
-      MODEL cancer = age famhistory;
-      WHERE group ne &y.;
+        MODEL cancer = age famhistory;
+        WHERE group ne &y.;
+      RUN;
+
+      *Put yth group into base test dataset;
+      DATA basetest&y.;
+        SET dca_of;
+        WHERE group = &y.;
+      RUN;
+
+       *Apply the base model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
+      PROC LOGISTIC INMODEL=base&y. NOPRINT;
+        SCORE DATA=basetest&y. OUT=base_pr&y.;
+      RUN;
+
+      * Likewise, for the second "final" model, fit the model excluding the yth group;
+      PROC LOGISTIC DATA=home.dca_of OUTMODEL=final&y. DESCENDING NOPRINT;
+        MODEL cancer = age famhistory marker;
+        WHERE group ne &y.;
+      RUN;
+
+      * Put yth group into final test dataset;
+      DATA finaltest&y.; SET dca_of;
+        WHERE group = &y.;
+      RUN;
+
+      * Apply the final model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
+      PROC LOGISTIC INMODEL=final&y. NOPRINT;
+        SCORE DATA=finaltest&y. OUT=final_pr&y.;
+      RUN;
+    %END;
+
+    * Combine base model predictions for all 10 groups;
+    DATA base_pr(RENAME=(P_1=base_pred));
+      SET base_pr1-base_pr10;
     RUN;
 
-    *Put yth group into base test dataset;
-    DATA basetest&y.;
-      SET dca_of;
-      WHERE group = &y.;
+    * Combine final model predictions for all 10 groups;
+    DATA final_pr(RENAME=(P_1=final_pred));
+      SET final_pr1-final_pr10;
     RUN;
 
-    *Apply the base model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
-    PROC LOGISTIC INMODEL=base&y. NOPRINT;
-      SCORE DATA=basetest&y. OUT=base_pr&y.;
+    * Sort and merge base model and final model prediction data together;
+    PROC SORT DATA=base_pr NODUPKEYS;
+      BY patientid;
     RUN;
 
-    *Likewise, for the second "final" model, fit the model excluding the yth group;
-    PROC LOGISTIC DATA=home.dca_of OUTMODEL=final&y. DESCENDING NOPRINT;
-      MODEL cancer = age famhistory marker;
-      WHERE group ne &y.;
+    PROC SORT DATA=final_pr NODUPKEYS;
+      BY patientid;
     RUN;
 
-    *Put yth group into final test dataset;
-    DATA finaltest&y.; SET dca_of;
-      WHERE group = &y.;
+    DATA all_pr;
+      MERGE base_pr final_pr;
+      BY patientid;
     RUN;
 
-    *Apply the final model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
-    PROC LOGISTIC INMODEL=final&y. NOPRINT;
-      SCORE DATA=finaltest&y. OUT=final_pr&y.;
-    RUN;
-  %END;
-
-  *Combine base model predictions for all 10 groups;
-  DATA base_pr(RENAME=(P_1=base_pred));
-    SET base_pr1-base_pr10;
-  RUN;
-
-  * Combine final model predictions for all 10 groups;
-  DATA final_pr(RENAME=(P_1=final_pred));
-    SET final_pr1-final_pr10;
-  RUN;
-
-  * Sort and merge base model and final model prediction data together;
-  PROC SORT DATA=base_pr NODUPKEYS;
-    BY patientid;
-  RUN;
-
-  PROC SORT DATA=final_pr NODUPKEYS;
-    BY patientid;
-  RUN;
-
-  DATA all_pr;
-    MERGE base_pr final_pr;
-    BY patientid;
-  RUN;
-
-  * Run decision curve and save out results;
-  * For those excluding the optional multiple cross validation, this decision curve (to be seen by using "graph=yes") and the results (saved under the name of your choosing) would be the decision curve corrected for overfit;
-  %DCA(data=all_pr, out=dca&x., outcome=cancer, predictors=base_pred final_pred,
-       graph=no, xstop=0.5);
+    * Run decision curve and save out results;
+    * For those excluding the optional multiple cross validation, this decision curve (to be seen by using "graph=yes") and the results (saved under the name of your choosing) would be the decision curve corrected for overfit;
+    %DCA(data=all_pr, out=dca&x., outcome=cancer, predictors=base_pred final_pred,
+         graph=no, xstop=0.5);
 
   *This "%END" statement ends the initial loop for the multiple cross validation. It is also necessary for those who avoided the multiple cross validation by changing the value in the DO loop from 200 to 1;
   %END;
