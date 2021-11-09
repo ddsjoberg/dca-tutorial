@@ -232,10 +232,10 @@ RUN;
     DATA dca_of;
       SET data_cancer;
       u = RAND("Uniform");
-      RUN;
-      *Sort by the event to ensure equal number of patients with the event are in
-      each group;
-      PROC SORT DATA=dca_of;
+    RUN;
+
+    *Sort by the event to ensure equal number of patients with the event are in each group;
+    PROC SORT DATA=dca_of;
       BY cancer u;
     RUN;
 
@@ -256,10 +256,10 @@ RUN;
     DATA basetest&y.;
       SET dca_of;
       WHERE group = &y.;
-      RUN;
-      *Apply the base model to the yth group and save the predicted
-      probabilities of the yth group (that was not used in creating the model);
-      PROC LOGISTIC INMODEL=base&y. NOPRINT;
+    RUN;
+
+    *Apply the base model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
+    PROC LOGISTIC INMODEL=base&y. NOPRINT;
       SCORE DATA=basetest&y. OUT=base_pr&y.;
     RUN;
 
