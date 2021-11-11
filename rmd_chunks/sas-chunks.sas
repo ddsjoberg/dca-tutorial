@@ -33,10 +33,10 @@ RUN;
 
 ## ---- sas-dca_famhistory -----
 * Run the decision curve: family history is coded as 0 or 1, i.e. a probability, so no need to specify the “probability” option;
-%DCA(data = famhistory, outcome = cancer, predictors = famhistory, graph = yes);
+%DCA(data = data_cancer, outcome = cancer, predictors = famhistory, graph = yes);
 
 ## ---- sas-dca_famhistory2 -----
-%DCA(data = famhistory, outcome = cancer, predictors = famhistory, graph = yes, xstop = 0.35);
+%DCA(data = data_cancer, outcome = cancer, predictors = famhistory, graph = yes, xstop = 0.35);
 
 ## ---- sas-model_multi -----
 * run the multivariable model;
