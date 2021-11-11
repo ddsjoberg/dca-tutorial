@@ -298,9 +298,9 @@ RUN;
   * Save out average net benefit and label variables so that the plot legend will have the proper labels.;
   DATA &out. (KEEP=model_pred all none threshold);
     SET CROSSVAL_minfinal;
-    LABEL all="(Mean) Net Benefit: Treat All";
-    LABEL none="(Mean) Net Benefit: Treat None";
-    LABEL model_pred="(Mean) Net Benefit: Model";
+    LABEL all="Treat All";
+    LABEL none="Treat None";
+    LABEL model_pred="Cross-validated Prediction Model";
   RUN;
 
   PROC DATASETS LIB=WORK;
