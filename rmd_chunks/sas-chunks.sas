@@ -224,124 +224,97 @@ RUN;
      predictors = cancerpredmarker, prevalence = 0.20);
 
 ## ---- sas-cross_validation -----
-%MACRO CROSSVAL;
-  *To skip the optional loop used for running the cross validation multiple times, either 1) change it to "%DO x = 1 %TO 1" or 2) omit this line of code and take care to change any code which references "&x.";
+%MACRO CROSSVAL(data=,             /*Name of input dataset*/
+                out=,              /*Name of output dataset containing calculated net benefit*/
+                outcome=,          /*outcome variable, 1=event, 0=nonevent*/
+                predictors=,       /*Covariates in the model*/
+                v = 10,            /*number of folds in the cross validation*/
+                repeats = 200,     /*Number of repeated cross validations that will be run*/
+                /*arguments passed to %DCA() */
+                xstart=0.01, xstop=0.99, xby=0.01, harm=);
 
-  %DO x = 1 %TO 200;
+  %DO x = 1 %TO &repeats.;
     *Load original data and create a variable to be used to 'randomize' patients;
-    DATA dca_of;
-      SET data_cancer;
+    DATA CROSSVAL_dca_of;
+      SET &data.;
       u = RAND("Uniform");
     RUN;
 
     *Sort by the event to ensure equal number of patients with the event are in each group;
-    PROC SORT DATA=dca_of;
-      BY cancer u;
+    PROC SORT DATA = CROSSVAL_dca_of;
+      BY &outcome. u;
     RUN;
 
     *Assign each patient into one of ten groups;
-    DATA dca_of;
-      SET dca_of;
-      group=MOD(_n_,10) + 1;
+    DATA CROSSVAL_dca_of;
+      SET CROSSVAL_dca_of;
+      group = MOD(_n_, &v.) + 1;
     RUN;
 
     *Loop through to run through for each of the ten groups;
-    %DO y = 1 %TO 10;
-      *First for the "base" model, fit the model excluding the yth group.;
-      PROC LOGISTIC DATA=dca_of OUTMODEL=base&y. DESCENDING NOPRINT;
-        MODEL cancer = age famhistory;
+    %DO y = 1 %TO &v.;
+      * First, fit the model excluding the yth group.;
+      PROC LOGISTIC DATA = CROSSVAL_dca_of OUTMODEL = CROSSVAL_df_model&y. DESCENDING NOPRINT;
+        MODEL &outcome. = &predictors.;
         WHERE group ne &y.;
       RUN;
 
       *Put yth group into base test dataset;
-      DATA basetest&y.;
-        SET dca_of;
+      DATA CROSSVAL_df_test&y.;
+        SET CROSSVAL_dca_of;
         WHERE group = &y.;
       RUN;
 
-       *Apply the base model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
-      PROC LOGISTIC INMODEL=base&y. NOPRINT;
-        SCORE DATA=basetest&y. OUT=base_pr&y.;
-      RUN;
-
-      * Likewise, for the second "final" model, fit the model excluding the yth group;
-      PROC LOGISTIC DATA=home.dca_of OUTMODEL=final&y. DESCENDING NOPRINT;
-        MODEL cancer = age famhistory marker;
-        WHERE group ne &y.;
-      RUN;
-
-      * Put yth group into final test dataset;
-      DATA finaltest&y.; SET dca_of;
-        WHERE group = &y.;
-      RUN;
-
-      * Apply the final model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
-      PROC LOGISTIC INMODEL=final&y. NOPRINT;
-        SCORE DATA=finaltest&y. OUT=final_pr&y.;
+       *Apply the model to the yth group and save the predicted probabilities of the yth group (that was not used in creating the model);
+      PROC LOGISTIC INMODEL=CROSSVAL_df_model&y. NOPRINT;
+        SCORE DATA = CROSSVAL_df_test&y. OUT = CROSSVAL_model_pr&y.;
       RUN;
     %END;
 
-    * Combine base model predictions for all 10 groups;
-    DATA base_pr(RENAME=(P_1=base_pred));
-      SET base_pr1-base_pr10;
-    RUN;
-
-    * Combine final model predictions for all 10 groups;
-    DATA final_pr(RENAME=(P_1=final_pred));
-      SET final_pr1-final_pr10;
-    RUN;
-
-    * Sort and merge base model and final model prediction data together;
-    PROC SORT DATA=base_pr NODUPKEYS;
-      BY patientid;
-    RUN;
-
-    PROC SORT DATA=final_pr NODUPKEYS;
-      BY patientid;
-    RUN;
-
-    DATA all_pr;
-      MERGE base_pr final_pr;
-      BY patientid;
+    * Combine model predictions for all 10 groups;
+    DATA CROSSVAL_model_pr(RENAME = (P_1=model_pred));
+      SET CROSSVAL_model_pr1-CROSSVAL_model_pr&v.;
     RUN;
 
     * Run decision curve and save out results;
     * For those excluding the optional multiple cross validation, this decision curve (to be seen by using "graph=yes") and the results (saved under the name of your choosing) would be the decision curve corrected for overfit;
-    %DCA(data=all_pr, out=dca&x., outcome=cancer, predictors=base_pred final_pred,
-         graph=no, xstop=0.5);
+    %DCA(data=CROSSVAL_model_pr, out=CROSSVAL_dca&x., outcome=&outcome., predictors=model_pred,
+         graph=no, xstart=&xstart., xstop=&xstop., xby=&xby., harm=&harm.);
 
   *This "%END" statement ends the initial loop for the multiple cross validation. It is also necessary for those who avoided the multiple cross validation by changing the value in the DO loop from 200 to 1;
   %END;
 
-  * The following is only used for the multiple 10 fold cross validation.;
-  * Append all values of the multiple cross validation;
-  DATA _NULL_;
-    CALL SYMPUTX("n",&x.-1);
-  RUN;
-
-  DATA allcv_pr;
-    SET dca1-dca&n.;
+  DATA CROSSVAL_allcv_pr;
+    SET CROSSVAL_dca1-CROSSVAL_dca&repeats.;
   RUN;
 
   * Calculate the average net benefit across all iterations of the multiple cross validation;
-  PROC MEANS DATA=allcv_pr NOPRINT;
+  PROC MEANS DATA=CROSSVAL_allcv_pr NOPRINT;
     CLASS threshold;
-    VAR all base_pred final_pred;
-    OUTPUT OUT=minfinal MEAN=all base_pred final_pred;
+    VAR all none model_pred;
+    OUTPUT OUT=CROSSVAL_minfinal MEAN=all none model_pred;
   RUN;
 
   * Save out average net benefit and label variables so that the plot legend will have the proper labels.;
-  DATA allcv_pr(KEEP=base_pred final_pred all none threshold);
-    SET allcv_pr(DROP=base_pred final_pred all) minfinal;
+  DATA &out. (KEEP=model_pred all none threshold);
+    SET CROSSVAL_minfinal;
     LABEL all="(Mean) Net Benefit: Treat All";
     LABEL none="(Mean) Net Benefit: Treat None";
-    LABEL base_pred="(Mean) Net Benefit: Base Model";
-    LABEL final_pred="(Mean) Net Benefit: Full Model";
+    LABEL model_pred="(Mean) Net Benefit: Model";
   RUN;
+
+  PROC DATASETS LIB=WORK;
+	DELETE CROSSVAL_:;
+  RUN;
+  QUIT;
 %MEND CROSSVAL;
 
 * Run the crossvalidation macro;
-%CROSSVAL;
+%CROSSVAL(data = data_cancer,
+          out = allcv_pr,
+          outcome = cancer,
+          predictors= age famhistory marker,
+          xstop = 0.5);
 
 * Plotting the figure of all the net benefits;
 PROC GPLOT DATA=allcv_pr;
@@ -350,8 +323,7 @@ PROC GPLOT DATA=allcv_pr;
   legend LABEL=NONE ACROSS=1 CBORDER=BLACK;
   PLOT all*threshold
   none*threshold
-  base_pred*threshold
-  final_pred*threshold /
+  model_pred*threshold /
   VAXIS=axis1
   HAXIS=axis2
   LEGEND=legend OVERLAY;
