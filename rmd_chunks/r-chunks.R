@@ -252,7 +252,7 @@ dca(casecontrol ~ cancerpredmarker,
 set.seed(112358)
 
 # create a 10-fold cross validation set
-rsample::vfold_cv(df_cancer_dx, v = 10, repeats = 1) %>%
+rsample::vfold_cv(df_cancer_dx, v = 10, repeats = 25) %>%
   # for each cut of the data, build logistic regression on the 90% (analysis set),
   # and perform DCA on the 10% (assessment set)
   rowwise() %>%
