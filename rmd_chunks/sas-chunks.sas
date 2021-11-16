@@ -192,8 +192,8 @@ RUN;
 DATA data_ttcancer;
   SET data_ttcancer;
   status = 0;
-  IF cancer=1 THEN status=1;
-  ELSE IF cancer=0 & dead=1 THEN status=2;
+  IF cancer_cr = "diagnosed with cancer" THEN status=1;
+  ELSE IF cancer_cr = "dead other causes" THEN status=2;
 RUN;
 
 * Run the decision curve specifying the competing risk option;
