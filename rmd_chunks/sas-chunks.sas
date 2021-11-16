@@ -153,9 +153,9 @@ RUN;
 
 ## ---- sas-coxph -----
 * Run the Cox model;
-PROC PHREG DATA=stdca;
-  MODEL _t*cancer(0) = age famhistory marker;
-  BASELINE OUT=baseline COVARIATES=stdca SURVIVAL=surv_func / NOMEAN METHOD=pl;
+PROC PHREG DATA=data_ttcancer;
+  MODEL ttcancer*cancer(0) = age famhistory marker;
+  BASELINE OUT=baseline COVARIATES=data_ttcancer SURVIVAL=surv_func / NOMEAN METHOD=pl;
 RUN;
 
 * the probability of failure at 1.5 years is calculated by subtracting the probability of survival from 1;
@@ -163,14 +163,14 @@ PROC SQL NOPRINT UNDO_POLICY=none;
   CREATE TABLE base_surv2 AS
   SELECT DISTINCT
   patientid, age, famhistory, marker, 1-min(surv_func) AS pr_failure18
-  FROM baseline (WHERE=(_t<=1.5))
+  FROM baseline (WHERE=(ttcancer<=1.5))
   GROUP BY patientid, age, famhistory, marker
   ;
 
   * merge survival estimates with original data;
-  CREATE TABLE stdca AS
+  CREATE TABLE data_ttcancer AS
   SELECT A.*, B.pr_failure18
-  FROM stdca A
+  FROM data_ttcancer A
   LEFT JOIN base_surv2 B
     ON (A.patientid=B.patientid) and (A.age=B.age) and
     (A.famhistory=B.famhistory) and (A.marker=B.marker);
