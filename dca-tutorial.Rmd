@@ -39,6 +39,49 @@ add_tabset_codes <- function(chunk_label, eval = TRUE, echo = FALSE,
     )
   cat(res, sep = '\n')
 }
+
+.convert_chunks_to_script <- function(language =  params$language) {
+  # convert language name to comment symbols
+  comment_start <-
+    switch(language,
+           "sas" = "/*",
+           "r" = "#",
+           "stata" = "/*",
+           "python" = "#")
+  comment_end <-
+    switch(language,
+           "sas" = "*/",
+           "r" = "",
+           "stata" = "*/",
+           "python" = "")
+  extension <-
+    switch(language,
+           "sas" = ".sas",
+           "r" = ".R",
+           "stata" = ".do",
+           "python" = ".py")
+  
+  readr::read_lines(here::here("rmd_chunks", paste0(language, "-chunks", extension))) %>%
+    map_chr(
+      ~ifelse(
+        # edit lines that are the chunk names
+        startsWith(., "## ----") & endsWith(., "-----"),
+        # replace the ## with the start comment symbols
+        str_replace(., "^##", fixed(comment_start)) %>% 
+          # add end of comment symbol
+          paste(comment_end) %>% 
+          # remove language name
+          str_replace(fixed(paste0(language, "-")), ""),
+        .
+      )
+    ) %>%
+    readr::write_lines(
+      here::here("rmd_chunks", "chunks_as_scripts", paste0(language, "-script", extension))
+    )
+}
+
+# save rmd chunks as a script
+.convert_chunks_to_script()
 ```
 
 ```{r, read_chunk, include=FALSE}
