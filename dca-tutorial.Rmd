@@ -76,12 +76,22 @@ add_tabset_codes <- function(chunk_label, eval = TRUE, echo = FALSE,
       )
     ) %>%
     readr::write_lines(
-      here::here("rmd_chunks", "chunks_as_scripts", paste0(language, "-script", extension))
+      here::here("rmd_chunks", "chunks_as_scripts", paste0("dca-script", extension))
     )
 }
 
 # save rmd chunks as a script
 .convert_chunks_to_script()
+
+# create link to download scripts
+extension <- switch(params$language, 
+                    "sas" = ".sas", "r" = ".R", 
+                    "stata" = ".do", "python" = ".py")
+script_url <- 
+  paste0(
+    "https://github.com/ddsjoberg/dca-tutorial/raw/main/rmd_chunks/chunks_as_scripts/",
+    "dca-script", extension
+  )
 ```
 
 ```{r, read_chunk, include=FALSE}
@@ -110,7 +120,7 @@ For more on DCA, visit [www.decisioncurveanalysis.org](https://www.mskcc.org/dep
 Below we will walk through how to perform decision curve analysis for binary and time-to-event outcomes using **R**, **Stata**, **SAS**, and **Python**.
 The code is provided for all languages, however, we only show output from the **R** functions.
 
-### Select a language
+## Select a language
 
 ```{r, language-table, echo = FALSE}
 tibble::tibble(
@@ -136,6 +146,10 @@ tibble::tibble(
     ),
     locations = gt::cells_column_labels(all_of(params$language))
   )
+```
+
+```{r, results='asis', echo = FALSE}
+str_glue('<a href="{script_url}" download>Download All Code</a>')
 ```
 
 ## Install & Load
