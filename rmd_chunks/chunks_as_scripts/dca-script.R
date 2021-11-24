@@ -3,10 +3,10 @@
 install.packages("dcurves")
 
 # install other packages used in this tutorial
-install.packages(c(
-  "tidyverse", "survival", "gt", "broom",
-  "gtsummary", "rsample", "labelled"
-))
+install.packages(
+  c("tidyverse", "survival", "gt", "broom",
+    "gtsummary", "rsample", "labelled")
+)
 
 # load packages
 library(dcurves)
