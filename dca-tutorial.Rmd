@@ -149,7 +149,7 @@ tibble::tibble(
 ```
 
 ```{r, results='asis', echo = FALSE}
-str_glue('<a href="{script_url}" download target="_blank"><b>Download DCA Code as Script</b></a>')
+str_glue('<a href="{script_url}" download target="_blank"><b>Download DCA Code</b></a>')
 ```
 
 ## Install & Load
