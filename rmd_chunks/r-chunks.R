@@ -90,7 +90,8 @@ df_cancer_dx <-
 # Run the decision curve
 dca(cancer ~ phat_brown,
   data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01)
+  thresholds = seq(0, 0.35, 0.01),
+  label = list(phat_brown = "Brown Model")
 ) %>%
   plot(smooth = TRUE)
 
