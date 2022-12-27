@@ -161,7 +161,7 @@ Use the scripts below to install the decision curve analysis functions and/or lo
 add_tabset_codes("install", eval = FALSE)
 ```
 
-## Decision Curve Analysis for Binary Outcomes
+## Binary Outcomes
 
 ### Motivating Example
 
@@ -380,7 +380,7 @@ At a probability threshold of 10%, the net reduction in interventions is about 0
 In other words, at this probability threshold, biopsying patients on the basis of the marker is the equivalent of a strategy that led to an absolute 15% reduction in the number of biopsies without missing any cancers.
 You can also report the net interventions avoided per 100 patients (or any number of patients).
 
-## Decision Curve Analysis for Survival Outcomes
+## Survival Outcomes
 
 ### Motivating Example
 
@@ -435,7 +435,7 @@ To run a competing risk analysis, we first create a failure variable that indica
 add_tabset_codes("stdca_cmprsk")
 ```
 
-## Decision Curve Analysis for Case-Control Designs
+## Case-Control Designs
 
 An issue with applying decision curve analysis to case-control data is that net benefit depends on prevalence, and prevalence in case-control studies is fixed by design.
 When working with case-control data, you can pass the population prevalence to accurately calculate the net benefit.
