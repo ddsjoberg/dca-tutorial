@@ -27,7 +27,7 @@ df_cancer_dx <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis"
+    cancerpredmarker = "Prediction Model"
   )
 
 # summarize data
@@ -74,7 +74,31 @@ df_cancer_dx <-
 dca(cancer ~ famhistory + cancerpredmarker,
   data = df_cancer_dx,
   thresholds = seq(0, 0.35, 0.01),
-  label = list(cancerpredmarker = "Probability of Cancer Diagnosis")
+  label = list(cancerpredmarker = "Prediction Model")
+) %>%
+  plot(smooth = FALSE)
+
+# ---- dca_smooth ----- 
+dca(cancer ~ famhistory + cancerpredmarker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    label = list(cancerpredmarker = "Prediction Model")
+) %>%
+  plot(smooth = TRUE)
+
+# ---- dca_smooth2 ----- 
+dca(cancer ~ famhistory + cancerpredmarker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.05),
+    label = list(cancerpredmarker = "Prediction Model")
+) %>%
+  plot(smooth = FALSE)
+
+# ---- dca_smooth3 ----- 
+dca(cancer ~ famhistory + cancerpredmarker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.05),
+    label = list(cancerpredmarker = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -187,7 +211,7 @@ df_time_to_cancer_dx <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis",
+    cancerpredmarker = "Prediction Model",
     cancer_cr = "Cancer Diagnosis Status"
   )
 
@@ -210,7 +234,7 @@ dca(Surv(ttcancer, cancer) ~ pr_failure18,
   data = df_time_to_cancer_dx,
   time = 1.5,
   thresholds = seq(0, 0.5, 0.01),
-  label = list(pr_failure18 = "Prob. of Cancer Dx within 18 Months")
+  label = list(pr_failure18 = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -231,7 +255,7 @@ dca(Surv(ttcancer, cancer_cr) ~ pr_failure18,
   data = df_time_to_cancer_dx,
   time = 1.5,
   thresholds = seq(0, 0.5, 0.01),
-  label = list(pr_failure18 = "Prob. of Cancer Dx within 18 Months")
+  label = list(pr_failure18 = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -249,7 +273,7 @@ df_cancer_dx_case_control <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis"
+    cancerpredmarker = "Prediction Model"
   )
 
 # summarize data

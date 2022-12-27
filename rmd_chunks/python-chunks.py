@@ -13,6 +13,12 @@ import dcurves
 
 ## ---- python-dca_multi -----
 
+## ---- python-dca_smooth -----
+
+## ---- python-dca_smooth2 -----
+
+## ---- python-dca_smooth3 -----
+
 ## ---- python-pub_model -----
 
 ## ---- python-joint -----

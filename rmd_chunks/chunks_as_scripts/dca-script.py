@@ -13,6 +13,12 @@ import dcurves
 
 # ---- dca_multi ----- 
 
+# ---- dca_smooth ----- 
+
+# ---- dca_smooth2 ----- 
+
+# ---- dca_smooth3 ----- 
+
 # ---- pub_model ----- 
 
 # ---- joint ----- 

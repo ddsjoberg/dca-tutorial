@@ -36,7 +36,16 @@ capture drop cancerpredmarker
 predict cancerpredmarker
 
 ## ---- stata-dca_multi -----
+dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.01)0.35)
+
+## ---- stata-dca_smooth -----
+dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.01)0.35) smooth
+
+## ---- stata-dca_smooth2 -----
 dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.05)0.35)
+
+## ---- stata-dca_smooth3 -----
+dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.05)0.35) smooth
 
 ## ---- stata-pub_model -----
 * Use the coefficients from the Brown model

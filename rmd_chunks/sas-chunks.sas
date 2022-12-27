@@ -49,6 +49,15 @@ RUN;
 ## ---- sas-dca_multi -----
 %DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35);
 
+## ---- sas-dca_smooth -----
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, smooth=yes);
+
+## ---- sas-dca_smooth2 -----
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, xby=0.05, smooth=no);
+
+## ---- sas-dca_smooth3 -----
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, xby=0.05, smooth=yes);
+
 ## ---- sas-pub_model -----
 DATA data_cancer;
   SET data_cancer;
