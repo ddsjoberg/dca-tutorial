@@ -101,11 +101,6 @@ knitr::read_chunk("rmd_chunks/sas-chunks.sas")
 knitr::read_chunk("rmd_chunks/python-chunks.py")
 ```
 
-<center><i>
-<img src="https://github.com/ddsjoberg/gtsummary/raw/master/vignettes/img/icons8-under-construction-100.png" height="55"/>Tutorial is under construction. Check back soon! <img src="https://github.com/ddsjoberg/gtsummary/raw/master/vignettes/img/icons8-under-construction-100.png" height="55"/>
-<br>
-</i></center>
-
 ## Introduction
 
 Diagnostic and prognostic models are typically evaluated with measures of accuracy, such as the area-under-the-curve (AUC) or the Brier score, that do not address clinical consequences.
