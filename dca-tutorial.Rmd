@@ -15,7 +15,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.height = 3)
 options(knitr.duplicate.label = "allow")
 gtsummary::theme_gtsummary_compact()
 
@@ -258,10 +258,6 @@ add_tabset_codes("dca_smooth2")
 ```
 
 You can also combine the two methods of smoothing together.
-
-```{r, dca_smooth3, echo=FALSE, message = FALSE, results='asis'}
-add_tabset_codes("dca_smooth3")
-```
 
 A few additional points are worth noting.
 First, look at the green line, the net benefit for "treat all", that is, biopsy everyone.

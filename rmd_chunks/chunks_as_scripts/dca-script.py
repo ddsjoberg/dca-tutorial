@@ -17,8 +17,6 @@ import dcurves
 
 # ---- dca_smooth2 ----- 
 
-# ---- dca_smooth3 ----- 
-
 # ---- pub_model ----- 
 
 # ---- joint ----- 

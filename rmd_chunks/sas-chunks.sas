@@ -22,7 +22,7 @@ DATA data_cancer;
         age = "Patient Age"
         famhistory = "Family History"
         marker = "Marker"
-        cancerpredmarker = "Probability of Cancer Diagnosis";
+        cancerpredmarker = "Prediction Model";
 RUN;
 
 ## ---- sas-model -----
@@ -54,9 +54,6 @@ RUN;
 
 ## ---- sas-dca_smooth2 -----
 %DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, xby=0.05, smooth=no);
-
-## ---- sas-dca_smooth3 -----
-%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, xby=0.05, smooth=yes);
 
 ## ---- sas-pub_model -----
 DATA data_cancer;
@@ -155,7 +152,7 @@ DATA data_ttcancer;
         age = "Patient Age"
         famhistory = "Family History"
         marker = "Marker"
-        cancerpredmarker = "Probability of Cancer Diagnosis"
+        cancerpredmarker = "Prediction Model"
         cancer_cr = "Cancer Diagnosis Status";
 
 RUN;

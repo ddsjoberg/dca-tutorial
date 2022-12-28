@@ -94,14 +94,6 @@ dca(cancer ~ famhistory + cancerpredmarker,
 ) %>%
   plot(smooth = FALSE)
 
-# ---- dca_smooth3 ----- 
-dca(cancer ~ famhistory + cancerpredmarker,
-    data = df_cancer_dx,
-    thresholds = seq(0, 0.35, 0.05),
-    label = list(cancerpredmarker = "Prediction Model")
-) %>%
-  plot(smooth = TRUE)
-
 # ---- pub_model ----- 
 # Use the coefficients from the Brown model
 df_cancer_dx <-

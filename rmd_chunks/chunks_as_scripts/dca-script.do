@@ -13,7 +13,7 @@ label variable risk_group "Risk Group"
 label variable age "Patient Age"
 label variable famhistory "Family History"
 label variable marker "Marker"
-label variable cancerpredmarker "Probability of Cancer Diagnosis"
+label variable cancerpredmarker "Prediction Model"
 
 /* ---- model ----- */
 * Test whether family history is associated with cancer
@@ -43,9 +43,6 @@ dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.01)0.35) smooth
 
 /* ---- dca_smooth2 ----- */
 dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.05)0.35)
-
-/* ---- dca_smooth3 ----- */
-dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.05)0.35) smooth
 
 /* ---- pub_model ----- */
 * Use the coefficients from the Brown model
@@ -125,7 +122,7 @@ label variable risk_group "Risk Group"
 label variable age "Patient Age"
 label variable famhistory "Family History"
 label variable marker "Marker"
-label variable cancerpredmarker "Probability of Cancer Diagnosis"
+label variable cancerpredmarker "Prediction Model"
 label variable cancer_cr "Cancer Diagnosis Status"
 
 * Declaring survival time data: follow-up time variable is ttcancer and the event is cancer
