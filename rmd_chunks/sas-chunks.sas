@@ -22,7 +22,7 @@ DATA data_cancer;
         age = "Patient Age"
         famhistory = "Family History"
         marker = "Marker"
-        cancerpredmarker = "Probability of Cancer Diagnosis";
+        cancerpredmarker = "Prediction Model";
 RUN;
 
 ## ---- sas-model -----
@@ -48,6 +48,12 @@ RUN;
 
 ## ---- sas-dca_multi -----
 %DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35);
+
+## ---- sas-dca_smooth -----
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, smooth=yes);
+
+## ---- sas-dca_smooth2 -----
+%DCA(data = data_cancer, outcome = cancer, predictors = cancerpredmarker famhistory, graph = yes, xstop = 0.35, xby=0.05, smooth=no);
 
 ## ---- sas-pub_model -----
 DATA data_cancer;
@@ -84,6 +90,13 @@ RUN;
      predictors = high_risk joint conditional,
      graph = yes, xstop = 0.35);
 
+## ---- sas-dca_harm_simple -----
+%DCA(data = data_cancer, outcome = cancer,
+     predictors = risk_group,
+     probability=no,
+     harm = 0.0333,
+     graph = yes, xstop = 0.35);
+
 ## ---- sas-dca_harm -----
 * the harm of measuring the marker is stored as a macro variable;
 %LET harm_marker = 0.0333;
@@ -109,8 +122,9 @@ RUN;
 %LET harm_conditional = %SYSEVALF(&meanrisk.*&harm_marker.);
 
 * Run the decision curve;
-%DCA(data = data_cancer, outcome = cancer, predictors = high_risk joint conditional,
-     harm = 0 &harm_marker. &harm_conditional., xstop = 0.35);
+%DCA(data = data_cancer, outcome = cancer, predictors = high_risk,
+     probability=no,
+     harm = &harm_conditional., xstop = 0.35);
 
 ## ---- sas-dca_table -----
 * Run the decision curve and save out net benefit results, specify xby=0.05 since we want 5% increments;
@@ -146,7 +160,7 @@ DATA data_ttcancer;
         age = "Patient Age"
         famhistory = "Family History"
         marker = "Marker"
-        cancerpredmarker = "Probability of Cancer Diagnosis"
+        cancerpredmarker = "Prediction Model"
         cancer_cr = "Cancer Diagnosis Status";
 
 RUN;

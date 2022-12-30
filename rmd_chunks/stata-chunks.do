@@ -13,7 +13,7 @@ label variable risk_group "Risk Group"
 label variable age "Patient Age"
 label variable famhistory "Family History"
 label variable marker "Marker"
-label variable cancerpredmarker "Probability of Cancer Diagnosis"
+label variable cancerpredmarker "Prediction Model"
 
 ## ---- stata-model -----
 * Test whether family history is associated with cancer
@@ -36,6 +36,12 @@ capture drop cancerpredmarker
 predict cancerpredmarker
 
 ## ---- stata-dca_multi -----
+dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.01)0.35)
+
+## ---- stata-dca_smooth -----
+dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.01)0.35) smooth
+
+## ---- stata-dca_smooth2 -----
 dca cancer cancerpredmarker famhistory, xstop(0.35) xlabel(0(0.05)0.35)
 
 ## ---- stata-pub_model -----
@@ -67,6 +73,9 @@ label var conditional "Treat via Conditional Approach"
 ## ---- stata-dca_joint -----
 dca cancer high_risk joint conditional, xstop(0.35) xlabel(0(0.05)0.35)
 
+## ---- stata-dca_harm_simple -----
+dca cancer high_risk, probability(no) harm(0.0333) xstop(0.35) xlabel(0(0.05)0.35)
+
 ## ---- stata-dca_harm -----
 * the harm of measuring the marker is stored in a local
 local harm_marker = 0.0333
@@ -79,7 +88,7 @@ local harm_conditional = r(mean)*`harm_marker'
 
 * Run the decision curve
 dca cancer high_risk joint conditional, ///
- harm(0 `harm_marker' `harm_conditional') xstop(0.35) xlabel(0(0.05)0.35)
+ probability(no) harm(`harm_conditional') xstop(0.35) xlabel(0(0.05)0.35)
 
 ## ---- stata-dca_table -----
 * Run the decision curve and save out net benefit results
@@ -116,7 +125,7 @@ label variable risk_group "Risk Group"
 label variable age "Patient Age"
 label variable famhistory "Family History"
 label variable marker "Marker"
-label variable cancerpredmarker "Probability of Cancer Diagnosis"
+label variable cancerpredmarker "Prediction Model"
 label variable cancer_cr "Cancer Diagnosis Status"
 
 * Declaring survival time data: follow-up time variable is ttcancer and the event is cancer

@@ -27,7 +27,7 @@ df_cancer_dx <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis"
+    cancerpredmarker = "Prediction Model"
   )
 
 # summarize data
@@ -49,8 +49,8 @@ dca(cancer ~ famhistory, data = df_cancer_dx) %>%
 
 ## ---- r-dca_famhistory2 -----
 dca(cancer ~ famhistory,
-  data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01)
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01)
 ) %>%
   plot()
 
@@ -67,16 +67,32 @@ df_cancer_dx <-
   mutate(
     cancerpredmarker =
       broom::augment(mod2, type.predict = "response") %>%
-        pull(".fitted")
+      pull(".fitted")
   )
 
 ## ---- r-dca_multi -----
 dca(cancer ~ famhistory + cancerpredmarker,
-  data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01),
-  label = list(cancerpredmarker = "Probability of Cancer Diagnosis")
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    label = list(cancerpredmarker = "Prediction Model")
+) %>%
+  plot(smooth = FALSE)
+
+## ---- r-dca_smooth -----
+dca(cancer ~ famhistory + cancerpredmarker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    label = list(cancerpredmarker = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
+
+## ---- r-dca_smooth2 -----
+dca(cancer ~ famhistory + cancerpredmarker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.05),
+    label = list(cancerpredmarker = "Prediction Model")
+) %>%
+  plot(smooth = FALSE)
 
 ## ---- r-pub_model -----
 # Use the coefficients from the Brown model
@@ -89,8 +105,9 @@ df_cancer_dx <-
 
 # Run the decision curve
 dca(cancer ~ phat_brown,
-  data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01)
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    label = list(phat_brown = "Brown Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -110,13 +127,23 @@ df_cancer_dx <-
 
 ## ---- r-dca_joint -----
 dca(cancer ~ high_risk + joint + conditional,
-  data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01),
-  label = list(
-    high_risk = "High Risk",
-    joint = "Joint Test",
-    conditional = "Conditional Approach"
-  )
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    label = list(
+      high_risk = "High Risk",
+      joint = "Joint Test",
+      conditional = "Conditional Approach"
+    )
+) %>%
+  plot(smooth = TRUE)
+
+## ---- r-dca_harm_simple -----
+# Run the decision curve
+dca(cancer ~ marker,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    as_probability = "marker",
+    harm = list(marker = 0.0333)
 ) %>%
   plot(smooth = TRUE)
 
@@ -130,24 +157,20 @@ harm_marker <- 0.0333
 harm_conditional <- mean(df_cancer_dx$risk_group == "intermediate") * harm_marker
 
 # Run the decision curve
-dca(cancer ~ high_risk + joint + conditional,
-  data = df_cancer_dx,
-  thresholds = seq(0, 0.35, 0.01),
-  harm = list(joint = harm_marker, conditional = harm_conditional),
-  label = list(
-    high_risk = "High Risk",
-    joint = "Joint Test",
-    conditional = "Conditional Approach"
-  )
+dca(cancer ~ risk_group,
+    data = df_cancer_dx,
+    thresholds = seq(0, 0.35, 0.01),
+    as_probability = "risk_group",
+    harm = list(risk_group = harm_conditional)
 ) %>%
   plot(smooth = TRUE)
 
 
 ## ---- r-dca_table -----
 dca(cancer ~ marker,
-  data = df_cancer_dx,
-  as_probability = "marker",
-  thresholds = seq(0.05, 0.35, 0.15)
+    data = df_cancer_dx,
+    as_probability = "marker",
+    thresholds = seq(0.05, 0.35, 0.15)
 ) %>%
   as_tibble() %>%
   select(label, threshold, net_benefit) %>%
@@ -163,10 +186,10 @@ dca(cancer ~ marker,
 
 ## ---- r-dca_intervention -----
 dca(cancer ~ marker,
-  data = df_cancer_dx,
-  as_probability = "marker",
-  thresholds = seq(0.05, 0.35, 0.01),
-  label = list(marker = "Marker")
+    data = df_cancer_dx,
+    as_probability = "marker",
+    thresholds = seq(0.05, 0.35, 0.01),
+    label = list(marker = "Marker")
 ) %>%
   net_intervention_avoided() %>%
   plot(smooth = TRUE)
@@ -186,7 +209,7 @@ df_time_to_cancer_dx <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis",
+    cancerpredmarker = "Prediction Model",
     cancer_cr = "Cancer Diagnosis Status"
   )
 
@@ -206,10 +229,10 @@ df_time_to_cancer_dx <-
 
 ## ---- r-stdca_coxph -----
 dca(Surv(ttcancer, cancer) ~ pr_failure18,
-  data = df_time_to_cancer_dx,
-  time = 1.5,
-  thresholds = seq(0, 0.5, 0.01),
-  label = list(pr_failure18 = "Prob. of Cancer Dx within 18 Months")
+    data = df_time_to_cancer_dx,
+    time = 1.5,
+    thresholds = seq(0, 0.5, 0.01),
+    label = list(pr_failure18 = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -222,15 +245,15 @@ df_time_to_cancer_dx <-
   mutate(
     cancer_cr =
       factor(cancer_cr,
-        levels = c("censor", "diagnosed with cancer", "dead other causes")
+             levels = c("censor", "diagnosed with cancer", "dead other causes")
       )
   )
 
 dca(Surv(ttcancer, cancer_cr) ~ pr_failure18,
-  data = df_time_to_cancer_dx,
-  time = 1.5,
-  thresholds = seq(0, 0.5, 0.01),
-  label = list(pr_failure18 = "Prob. of Cancer Dx within 18 Months")
+    data = df_time_to_cancer_dx,
+    time = 1.5,
+    thresholds = seq(0, 0.5, 0.01),
+    label = list(pr_failure18 = "Prediction Model")
 ) %>%
   plot(smooth = TRUE)
 
@@ -248,7 +271,7 @@ df_cancer_dx_case_control <-
     age = "Patient Age",
     famhistory = "Family History",
     marker = "Marker",
-    cancerpredmarker = "Probability of Cancer Diagnosis"
+    cancerpredmarker = "Prediction Model"
   )
 
 # summarize data
@@ -262,9 +285,9 @@ df_cancer_dx_case_control %>%
 
 ## ---- r-dca_case_control -----
 dca(casecontrol ~ cancerpredmarker,
-  data = df_cancer_dx_case_control,
-  prevalence = 0.20,
-  thresholds = seq(0, 0.5, 0.01)
+    data = df_cancer_dx_case_control,
+    prevalence = 0.20,
+    thresholds = seq(0, 0.5, 0.01)
 ) %>%
   plot(smooth = TRUE)
 
@@ -281,10 +304,10 @@ rsample::vfold_cv(df_cancer_dx, v = 10, repeats = 25) %>%
     # build regression model on analysis set
     glm_analysis =
       glm(cancer ~ marker + age + famhistory,
-        data = rsample::analysis(splits),
-        family = binomial
+          data = rsample::analysis(splits),
+          family = binomial
       ) %>%
-        list(),
+      list(),
     # get predictions for assessment set
     df_assessment =
       broom::augment(
@@ -292,16 +315,16 @@ rsample::vfold_cv(df_cancer_dx, v = 10, repeats = 25) %>%
         newdata = rsample::assessment(splits),
         type.predict = "response"
       ) %>%
-        list(),
+      list(),
     # calculate net benefit on assessment set
     dca_assessment =
       dca(cancer ~ .fitted,
-        data = df_assessment,
-        thresholds = seq(0, 0.35, 0.01),
-        label = list(.fitted = "Cross-validated Prediction Model")
+          data = df_assessment,
+          thresholds = seq(0, 0.35, 0.01),
+          label = list(.fitted = "Cross-validated Prediction Model")
       ) %>%
-        as_tibble() %>%
-        list()
+      as_tibble() %>%
+      list()
   ) %>%
   # pool results from the 10-fold cross validation
   pull(dca_assessment) %>%

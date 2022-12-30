@@ -65,6 +65,10 @@ plot_graphs(
     y_limits=[-0.05, 0.2]
     )
 
+## ---- python-dca_smooth -----
+
+## ---- python-dca_smooth2 -----
+
 ## ---- python-pub_model -----
 
 df_cancer_dx['logodds_brown'] = 0.75 * df_cancer_dx['famhistory'] + 0.26*df_cancer_dx['age'] - 17.5
@@ -87,6 +91,8 @@ plot_graphs(
 ## ---- python-joint -----
 
 ## ---- python-dca_joint -----
+
+## ---- python-dca_harm_simple -----
 
 ## ---- python-dca_harm -----
 

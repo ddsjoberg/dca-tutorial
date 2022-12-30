@@ -15,7 +15,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.height = 3)
 options(knitr.duplicate.label = "allow")
 gtsummary::theme_gtsummary_compact()
 
@@ -101,11 +101,6 @@ knitr::read_chunk("rmd_chunks/sas-chunks.sas")
 knitr::read_chunk("rmd_chunks/python-chunks.py")
 ```
 
-<center><i>
-<img src="https://github.com/ddsjoberg/gtsummary/raw/master/vignettes/img/icons8-under-construction-100.png" height="55"/>Tutorial is under construction. Check back soon! <img src="https://github.com/ddsjoberg/gtsummary/raw/master/vignettes/img/icons8-under-construction-100.png" height="55"/>
-<br>
-</i></center>
-
 ## Introduction
 
 Diagnostic and prognostic models are typically evaluated with measures of accuracy, such as the area-under-the-curve (AUC) or the Brier score, that do not address clinical consequences.
@@ -118,7 +113,8 @@ In decision curve analysis, models are compared to two default strategies: 1) as
 
 For more on DCA, visit [www.decisioncurveanalysis.org](https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis): you'll find the original articles explaining the theory and mathematical derivation of net benefit along with papers justifying the advantages of decision curve analysis over other methods of model evaluation.
 Below we will walk through how to perform decision curve analysis for binary and time-to-event outcomes using **R**, **Stata**, **SAS**, and **Python**.
-The code is provided for all languages, however, we only show output from the **R** functions.
+Code is provided for all languages and can be downloaded or simply copy and pasted into your application to see how it runs.
+For simplicity's sake, however, we only show output from the R functions; although, naturally, output is very similar irrespective of programming language.  .
 
 ## Select a language
 
@@ -160,7 +156,7 @@ Use the scripts below to install the decision curve analysis functions and/or lo
 add_tabset_codes("install", eval = FALSE)
 ```
 
-## DCA for Binary Outcomes
+## Binary Outcomes
 
 ### Motivating Example
 
@@ -175,8 +171,8 @@ If the marker does indeed predict well, many patients will not need to undergo a
 ### Data Set-up
 
 We will go through step by step how to import your data, build models based on multiple variables, and use those models to obtain predicted probabilities.
-The first step is to import your data.
-Once you have the data imported, you'll want to begin building your model.
+The first step is to import your data, label the variables and produce a table of summary statistics.
+The second step is  you’ll want to begin building your model.
 As we have a binary outcome (i.e. the outcome of our model has two levels: cancer or no cancer), we will be using a logistic regression model.
 
 ```{r, import_cancer, echo=FALSE, message = FALSE, results='asis'}
@@ -213,13 +209,14 @@ Now that the graph is showing a more reasonable range of threshold probabilities
 We can see here that although family history is significantly associated with biopsy outcome, it only adds value to a small range of threshold probabilities near 13% - 20%.
 If your personal threshold probability is 15% (i.e. you would only undergo a biopsy if your probability of cancer was 15% or more), then family history alone can be beneficial in making the decision to undergo biopsy.
 However, if your threshold probability is less than 13% or higher than 20%, then using family history to decide on biopsy has less benefit than choosing to biopsy or not biopsy respectively.
+Hence, we would conclude that using family history to determine who to biopsy would help some patients but harm some others, and so should not be used in the clinic.
 
 ### Multivariable Decision Curve Analysis
 
 #### Evaluation of New Models
 
 We want to examine the value of a statistical model that incorporates family history, age, and the marker.
-First, we will build the logistic regression model with all three variables, and second we would saved out the predicted probability of having cancer based on the model.
+First, we will build the logistic regression model with all three variables, and then save  the predicted probability of having cancer based on the model.
 Note that in our example data set, this variable actually already exists so it wouldn't be necessary to create the predicted probabilities once again.
 
 ```{r, model_multi, echo=FALSE, message = FALSE, results='asis'}
@@ -234,6 +231,28 @@ add_tabset_codes("dca_multi")
 
 The key aspect of decision curve analysis is to look at which strategy leads to the largest net benefit (i.e. the "highest" line), which in this example would correspond to the model that includes age, family history of cancer, and the marker.
 It is clear that the statistical model has the highest net benefit across the entire range of threshold probabilities.
+Accordingly, we would conclude that using the model to decide whether to biopsy a patient would lead to better clinical outcomes.
+
+The decision curve for the model should in theory be a smooth curve with net benefit always going down (or staying the same) as you move from left to right.
+But the curve is a bit bumpy and sometimes even increases a bit, a result of statistical noise.
+Some researchers prefer to show a smoothed curve and there are two options for doing so.
+First, you can add a smoother.
+Note that different programs use different smoothers as there is no one smoother that is best in every situation.
+As such, results of a smoothed curve should always be compared with the unsmoothed curve to ensure that it gives a fair representation of the data.
+
+```{r, dca_smooth, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_smooth")
+```
+
+An alternative is to calculate net benefit at wider intervals.
+By default, the software calculates net benefit at every 1% of threshold probability, but we this can cause artifacts unless the data set is very large.
+You can specify instead to calculate net benefit every 5%. 
+
+```{r, dca_smooth2, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_smooth2")
+```
+
+You can also combine the two methods of smoothing together.
 
 A few additional points are worth noting.
 First, look at the green line, the net benefit for "treat all", that is, biopsy everyone.
@@ -261,58 +280,6 @@ This decision curve suggests that although the model might be useful in the most
 As such, the Brown et al. model should not be used in clinical practice.
 This effect, a model being harmful, occurs due to miscalibration, that is, when patients are given risks that are too high or too low.
 Note that miscalibration only occurs rarely when models are created and tested on the same data set, such as in the example where we created a model with both family history and the marker.
-
-#### Joint or Conditional Tests
-
-Many decisions in medicine are based on joint or conditional test results.
-A classic example is where patients are categorized on the basis of a test as being at high, low or intermediate risk.
-Patients at high risk are referred immediately for treatment (in our example biopsied); patients at low risk are reassured and advised that no further action is necessary; patients at intermediate risk are sent for an additional test, with subsequent treatment decisions made accordingly.
-
-Imagine that for our example there was a previous test that categorized our patients as high, low, and intermediate risk of cancer and we wanted to incorporate our marker.
-There are five clinical options:
-
-1.  Biopsy everyone
-2.  Biopsy no one
-3.  Biopsy everyone that was determined to be at high risk of cancer; don't use the marker
-4.  Measure the marker for everyone, then biopsy anyone who is either at high risk of cancer or who was determined to have a probability of cancer past a certain level, based on the marker (i.e. joint approach)
-5.  Biopsy everyone at high risk; measure the marker for patients at intermediate risk and biopsy those with a probability of cancer past a certain level, based on the marker (i.e. conditional approach)
-
-Decision curve analysis can incorporate joint or conditional testing.
-All that is required is that appropriate variables are calculated from the data set; decision curves are then calculated as normal.
-First we would create the variables to represent our joint and conditional approach.
-For our example, let us use 0.15 as the cutoff probability level for patients who had their marker measured and should be biopsied.
-
-```{r, joint, echo=FALSE, message = FALSE, results='asis'}
-add_tabset_codes("joint")
-```
-
-Now that we have the variables worked out, we can run the decision curve analysis.
-
-```{r, dca_joint, echo=FALSE, message = FALSE, results='asis'}
-add_tabset_codes("dca_joint")
-```
-
-This appears to show that the joint test is the better option for the range of threshold probabilities from 5% - 24% since it has the highest net benefit across that range.
-For threshold probabilities less then 5%, the clinical option of treating all would be superior to any other option, though rarely would treatment thresholds be so low.
-From 28%-35%, the conditional test would be a slightly better option, and in between the two ranges, the joint and conditional tests are comparable.
-The obvious disadvantage of the joint test is that the marker needs to be measured for everyone, and such tests may be expensive and time consuming, especially if, for instance, the marker was a imaging test.
-
-#### Incorporating Harms into Model Assessment
-
-To incorporate the harm associated with obtaining the marker, we ask a clinician, who tells us that, even if the marker were perfectly accurate, few clinicians would conduct more than 30 tests to predict one cancer diagnosis.
-This might be because the test is expensive, or requires some invasive procedure to obtain.
-The "harm" of measuring the marker is the reciprocal of 30, or 0.0333.
-
-To construct the decision curves for each strategy we now incorporate harm.
-We have to calculate harm specially for the conditional test, because only patients at intermediate risk are measured for the marker.
-Then incorporate it into our decision curve.
-The strategy for incorporating harm for the conditional test is by multiplying the proportion scanned by the harm of the scan.
-
-```{r, dca_harm, echo=FALSE, message = FALSE, results='asis'}
-add_tabset_codes("dca_harm")
-```
-
-Here the conditional test is clearly the best option (above the 8% treatment threshold), in fact, once you take into account the harm of measuring the marker, it is clearly not worth measuring the marker for everyone: the net benefit of just treating high risk patients is often higher than that of the joint test.
 
 #### Saving out Net Benefit Values
 
@@ -348,10 +315,11 @@ To view decrease in interventions graphically, we would only need to specify it 
 add_tabset_codes("dca_intervention")
 ```
 
-At a probability threshold of 15%, the net reduction in interventions is about 33 per 100 patients.
-In other words, at this probability threshold, biopsying patients on the basis of the marker is the equivalent of a strategy that reduced the biopsy rate by 33%, without missing any cancers.
+At a probability threshold of 10%, the net reduction in interventions is about 0.15.
+In other words, at this probability threshold, biopsying patients on the basis of the marker is the equivalent of a strategy that led to an absolute 15% reduction in the number of biopsies without missing any cancers.
+You can also report the net interventions avoided per 100 patients (or any number of patients).
 
-## DCA for Survival Outcomes
+## Survival Outcomes
 
 ### Motivating Example
 
@@ -367,7 +335,7 @@ add_tabset_codes("import_ttcancer")
 ```
 
 The survival probability to any time-point can be derived from any type of survival model; here we use a Cox as this is the most common model in statistical practice.
-The formula for a survival probability from a Cox model is given by:
+You don’t necessarily need to know this to run a decision curve, but the formula for a survival probability from a Cox model is given by:
 
 $$
 S(t|X) = S_0(t)^{e^{X\beta}}
@@ -389,8 +357,6 @@ add_tabset_codes("coxph")
 The code for running the decision curve analysis is straightforward after the probability of failure is calculated.
 All we have to do is specify the time point we are interested in.
 For our example, let us not only set the threshold from 0% to 50%, but also add smoothing.
-Note that different programs use different smoothers as there is no one smoother that is best in every situation.
-As such, results of a smoothed curve should always be compared with the unsmoothed curve to ensure that it gives a fair representation of the data.
 
 ```{r, stdca_coxph, echo=FALSE, message = FALSE, results='asis'}
 add_tabset_codes("stdca_coxph")
@@ -408,7 +374,7 @@ To run a competing risk analysis, we first create a failure variable that indica
 add_tabset_codes("stdca_cmprsk")
 ```
 
-## DCA for Case-Control Designs
+## Case-Control Designs
 
 An issue with applying decision curve analysis to case-control data is that net benefit depends on prevalence, and prevalence in case-control studies is fixed by design.
 When working with case-control data, you can pass the population prevalence to accurately calculate the net benefit.
@@ -425,6 +391,29 @@ add_tabset_codes("dca_case_control")
 
 The interpretation of the decision curve analysis figure is the same as for a cohort study.
 In this example, the model performs worse than a biopsy all strategy from threshold 0% to 17%, and the model has benefit from 18% to 40%.
+As the model does not have the highest net benefit across the full range of reasonable threshold probabilities, it is not justified to use it in practice. 
+
+## Incorporating Harms
+
+To incorporate the harm associated with obtaining the marker, we ask a clinician, who tells us that, even if the marker were perfectly accurate, few clinicians would conduct more than 30 tests to predict one cancer diagnosis.
+This might be because the test is expensive, or requires some invasive procedure to obtain.
+The "harm" of measuring the marker is the reciprocal of 30, or 0.0333.
+
+```{r, dca_harm_simple, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_harm_simple")
+```
+
+Many decisions in medicine are based on conditional test results, however.
+A classic example is where patients are categorized on the basis of a test as being at high, low or intermediate risk.
+Patients at high risk are referred immediately for treatment (in our example biopsied); patients at low risk are reassured and advised that no further action is necessary; patients at intermediate risk are sent for an additional test, with subsequent treatment decisions made accordingly.
+
+We have to calculate harm specially for the conditional test, because only patients at intermediate risk are measured for the marker.
+Then incorporate it into our decision curve.
+The strategy for incorporating harm for the conditional test is by multiplying the proportion scanned by the harm of the scan.
+
+```{r, dca_harm, echo=FALSE, message = FALSE, results='asis'}
+add_tabset_codes("dca_harm", eval = FALSE)
+```
 
 ## Correction for Overfit
 
