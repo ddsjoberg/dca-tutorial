@@ -23,6 +23,8 @@ import dcurves
 
 # ---- dca_joint ----- 
 
+# ---- dca_harm_simple ----- 
+
 # ---- dca_harm ----- 
 
 # ---- dca_table ----- 

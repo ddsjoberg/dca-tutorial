@@ -73,6 +73,9 @@ label var conditional "Treat via Conditional Approach"
 ## ---- stata-dca_joint -----
 dca cancer high_risk joint conditional, xstop(0.35) xlabel(0(0.05)0.35)
 
+## ---- stata-dca_harm_simple -----
+dca cancer high_risk, probability(no) harm(0.0333) xstop(0.35) xlabel(0(0.05)0.35)
+
 ## ---- stata-dca_harm -----
 * the harm of measuring the marker is stored in a local
 local harm_marker = 0.0333
@@ -85,7 +88,7 @@ local harm_conditional = r(mean)*`harm_marker'
 
 * Run the decision curve
 dca cancer high_risk joint conditional, ///
- harm(0 `harm_marker' `harm_conditional') xstop(0.35) xlabel(0(0.05)0.35)
+ probability(no) harm(`harm_conditional') xstop(0.35) xlabel(0(0.05)0.35)
 
 ## ---- stata-dca_table -----
 * Run the decision curve and save out net benefit results
