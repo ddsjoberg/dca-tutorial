@@ -400,7 +400,7 @@ This might be because the test is expensive, or requires some invasive procedure
 The "harm" of measuring the marker is the reciprocal of 30, or 0.0333.
 
 ```{r, dca_harm_simple, echo=FALSE, message = FALSE, results='asis'}
-add_tabset_codes("dca_harm_simple", eval = FALSE)
+add_tabset_codes("dca_harm_simple")
 ```
 
 Many decisions in medicine are based on conditional test results, however.
