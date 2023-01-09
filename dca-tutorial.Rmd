@@ -403,6 +403,9 @@ The "harm" of measuring the marker is the reciprocal of 30, or 0.0333.
 add_tabset_codes("dca_harm_simple")
 ```
 
+This shows the net benefit of the model is no longer superior across the full range of reasonable threshold probabilities.
+Hence the benefit of using the model does not outweigh the harm of having to collect the marker needed by the model. 
+
 Many decisions in medicine are based on conditional test results, however.
 A classic example is where patients are categorized on the basis of a test as being at high, low or intermediate risk.
 Patients at high risk are referred immediately for treatment (in our example biopsied); patients at low risk are reassured and advised that no further action is necessary; patients at intermediate risk are sent for an additional test, with subsequent treatment decisions made accordingly.
