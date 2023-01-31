@@ -2,7 +2,7 @@
 
   # install dcurves to perform DCA (first install package via pip)
   # pip install dcurves
-  import dcurves
+  from dcurves import dca, plot_graphs
   
   # install other packages used in this tutorial
   # pip install pandas numpy statsmodels lifelines
