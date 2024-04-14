@@ -14,6 +14,8 @@ editor_options:
     wrap: sentence
 ---
 
+**This tutorial has moved. Visit [http://www.decisioncurveanalysis.org](http://www.decisioncurveanalysis.org) for the latest updates.** 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.height = 3)
 options(knitr.duplicate.label = "allow")
